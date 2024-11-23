@@ -17,12 +17,7 @@ class PhysicsEntity:
         self.collisions = {'up': False, 'down': False, 'left': False, 'right': False}
 
         self.action = ''
-<<<<<<< HEAD
         self.anim_offset = (0, 0) #renders with an offset to pad the animation against the hitbox
-        self.flip = False
-=======
-        self.anim_offset = (-3, -3) #renders with an offset to pad the animation against the hitbox
->>>>>>> 5cfe26bbd7af031c4392f1f180c4b2d1cd98d060
         self.set_action('idle')
 
         self.last_movement = [0, 0]
