@@ -29,7 +29,8 @@ class Game:
 
         self.clock = pygame.time.Clock()
         
-        self.movement = [False, False]
+        self.movement = [False, False, False, False]  # left, right, up, down
+        self.slowdown = 0 # slow down the game
 
         self.assets = {
             'decor': load_images('tiles/ground'),
@@ -236,20 +237,31 @@ class Game:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_LEFT: # referencing right and left arrow keys
+                    if event.key == pygame.K_a: # referencing right and left arrow keys
                         self.movement[0] = True
-                    if event.key == pygame.K_RIGHT: 
+                        self.slowdown = False
+                    if event.key == pygame.K_d: 
                         self.movement[1] = True
-                    if event.key == pygame.K_UP: # jump!, dont care about it's release as I dont want a constant jump on hold
-                        if self.player.jump():  # velocity pointing upwards, gravity will pull player back down over time
-                            self.sfx['jump'].play()
-                    if event.key == pygame.K_x:
-                        self.player.dash()
+                        self.slowdown = False
+                    if event.key == pygame.K_w:
+                        self.movement[2] = True
+                        self.slowdown = False
+                    if event.key == pygame.K_s:
+                        self.movement[3] = True
+                        self.slowdown = False
+                    else:
+                        self.slowdown = True
                 if event.type == pygame.KEYUP: # when key is released
-                    if event.key == pygame.K_LEFT: 
+                    if event.key == pygame.K_a: 
                         self.movement[0] = False
-                    if event.key == pygame.K_RIGHT: 
+                    if event.key == pygame.K_d: 
                         self.movement[1] = False
+                    if event.key == pygame.K_w:
+                        self.movement[2] = False
+                    if event.key == pygame.K_s:
+                        self.movement[3] = False
+                    if event.key == pygame.K_x:
+                        self.slowdown = False
 
             # implementing transition
             if self.transition:
