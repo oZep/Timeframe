@@ -41,6 +41,7 @@ class Game:
             'enemy/idle': Animation(load_images('entities/enemy/idle'), img_dur=6),
             'target': load_image('entities/target_round_a.png'),
             'playerbullet': load_image('entities/PlayerBullet.png'),
+            'enemybullet': load_image('entities/enemy_bullet.png'),
             'W': load_image('UI/W.png'),
             'A': load_image('UI/A.png'),
             'S': load_image('UI/S.png'),
@@ -119,7 +120,7 @@ class Game:
 
         self.game_timer = 60000
 
-        slowdown_timer_change = 3
+        slowdown_timer_change = 10
 
         self.has_moved = False
 
@@ -133,7 +134,7 @@ class Game:
             self.screenshake = max(0, self.screenshake-1) # resets screenshake value
 
             #Count game timer down if has moved
-            if self.has_moved:
+            if self.has_moved and not self.dead:
                 self.game_timer -= self.deltatime * (1 + self.slowdown * (slowdown_timer_change -1))
 
             if self.dead: # get hit once
@@ -226,7 +227,7 @@ class Game:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1:
+                    if event.button == 1 and not self.dead:
                         dx = mpos[0] - self.player.rect().centerx
                         dy = mpos[1] - self.player.rect().centery
                         bullet_angle = math.atan2(dx, -dy) - (math.pi/2)

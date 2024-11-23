@@ -1,6 +1,7 @@
 import pygame
 import math
 
+from scripts.bullet import Bullet
 
 class PhysicsEntity:
     def __init__(self, game, e_type, pos, size):
@@ -132,8 +133,17 @@ class Enemy(PhysicsEntity):
         '''
         super().__init__(game, 'enemy', pos, size)
         self.set_action('idle')
+        self.shoot_wait = 1000
     
     def update(self, tilemap, movement=(0,0)):
+        self.shoot_wait -= self.game.deltatime * (1 - (self.game.slowdown * 2/3))
+        if self.shoot_wait < 0:
+            dx = self.game.player.rect().centerx - self.rect().centerx
+            dy = self.game.player.rect().centery - self.rect().centery
+            bullet_angle = math.atan2(dx, -dy) - (math.pi/2)
+            new_bullet = Bullet(self.game, self.rect().center, 10, bullet_angle, size=(18, 18), type='enemy')
+            self.game.bullets.append(new_bullet)
+            self.shoot_wait = 1000
         enemy_movement = movement
         movement_magnitude = math.sqrt((movement[0] * movement[0] + movement[1] * movement[1]))
         if movement_magnitude > 0:

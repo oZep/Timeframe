@@ -16,7 +16,6 @@ class Bullet():
     def update(self, tilemap):
         self.pos[0] += math.cos(self.angle) * self.velocity * self.game.game_speed
         self.pos[1] += math.sin(self.angle) * self.velocity * self.game.game_speed
-        collided = False
         if tilemap.solid_check(self.pos):
             return True
         else:
@@ -25,7 +24,7 @@ class Bullet():
                     rect = enemy.rect()
                     if rect.collidepoint(self.pos):
                         self.game.enemies.remove(enemy)
-                        self.game.game_timer += 5000
+                        self.game.game_timer += 3000
                         return True
             elif self.type == 'enemy':
                 rect = self.game.player.rect()
