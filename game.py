@@ -19,9 +19,9 @@ class Game:
         # change the window caption
         pygame.display.set_caption("Pok N Wack")
         # create window
-        self.screen = pygame.display.set_mode((1920,1080))
+        self.screen = pygame.display.set_mode((1280,720))
 
-        self.display = pygame.Surface((1920,1080)) # render on different resolution then scale it up to screen
+        self.display = pygame.Surface((1280,720)) # render on different resolution then scale it up to screen
 
         self.clock = pygame.time.Clock()
         
@@ -40,7 +40,7 @@ class Game:
 
 
         # initalizing player
-        self.player = Player(self, (1920/2, 1080/2), (42, 42))
+        self.player = Player(self, (self.screen.get_width()/2, self.screen.get_height()/2), (42, 42))
 
         # initalizing tilemap
         self.tilemap = Tilemap(self, tile_size=64)
