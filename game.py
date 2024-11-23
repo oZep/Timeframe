@@ -10,6 +10,7 @@ from scripts.bullet import Bullet
 from scripts.tilemap import Tilemap
 from scripts.UI import Text
 from scripts.menu import Menu
+from scripts.gameover import GameOver
 
 
 class Game:
@@ -95,6 +96,28 @@ class Game:
             self.screen.blit(pygame.transform.scale(self.display, self.screen_size), [0,0])
             pygame.display.update()
             self.deltatime = self.clock.tick(60) # run at 60 fps, like a sleep
+
+    def game_over(self, score):
+        while True:
+            self.display.fill((255, 255, 255))
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        pygame.quit()
+                        sys.exit()
+                    if event.key == pygame.K_RETURN:
+                        self.main_menu()
+
+            # rnder the game over screen
+            game_over = GameOver(score)
+            game_over.update()
+            game_over.render()
+
+
 
     def run(self):
         '''
