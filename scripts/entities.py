@@ -136,7 +136,7 @@ class Enemy(PhysicsEntity):
         self.shoot_wait = 1000
     
     def update(self, tilemap, movement=(0,0)):
-        self.shoot_wait -= self.game.deltatime * (1 - (self.game.slowdown * 2/3))
+        self.shoot_wait -= self.game.deltatime * (1 - (self.game.slowdown * (self.game.slowdown_timer_change-1)/self.game.slowdown_timer_change))
         if self.shoot_wait < 0:
             dx = self.game.player.rect().centerx - self.rect().centerx
             dy = self.game.player.rect().centery - self.rect().centery
@@ -151,6 +151,8 @@ class Enemy(PhysicsEntity):
         enemy_movement = [enemy_movement[0] * 0.75, enemy_movement[1] * 0.75]
 
         super().update(tilemap, movement=enemy_movement)
+        if self.rect().colliderect(self.game.player.rect()):
+            self.game.dead += 1
             
 
     def render(self, surf, offset=(0, 0)):

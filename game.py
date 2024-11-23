@@ -111,16 +111,17 @@ class Game:
         self.game_speed = 1
 
         #Enemy spawn wait (milliseconds)
-        self.enemy_timer = 2000
+        self.enemy_timer_reset = 2000
+        self.enemy_timer = self.enemy_timer_reset
 
         self.enemies = []
         self.bullets = []
 
         self.deltatime = 0
 
-        self.game_timer = 60000
+        self.game_timer = 30000
 
-        slowdown_timer_change = 10
+        self.slowdown_timer_change = 10
 
         self.has_moved = False
 
@@ -135,14 +136,14 @@ class Game:
 
             #Count game timer down if has moved
             if self.has_moved and not self.dead:
-                self.game_timer -= self.deltatime * (1 + self.slowdown * (slowdown_timer_change -1))
+                self.game_timer -= self.deltatime * (1 + self.slowdown * (self.slowdown_timer_change -1))
 
             if self.dead: # get hit once
                 self.dead += 1
             
             #Count down if has moved, if time elapsed spawn enemy
             if self.has_moved:
-                self.enemy_timer -= self.deltatime * (1 - (self.slowdown * (slowdown_timer_change-1)/slowdown_timer_change))
+                self.enemy_timer -= self.deltatime * (1 - (self.slowdown * (self.slowdown_timer_change-1)/self.slowdown_timer_change))
             if self.enemy_timer < 0:
                 enemy_pos = [100, 100]
                 if random.randint(0, 1) == 0:
@@ -154,7 +155,10 @@ class Game:
                 new_enemy = Enemy(self, enemy_pos, (42, 42))
                 self.enemies.append(new_enemy)
                 #next wait (milliseconds)
-                self.enemy_timer = 2000
+                self.enemy_timer_reset -= 100
+                if self.enemy_timer_reset < 100:
+                    self.enemy_timer_reset = 100
+                self.enemy_timer = self.enemy_timer_reset
 
             render_scroll = (0, 0)
 
@@ -233,6 +237,7 @@ class Game:
                         bullet_angle = math.atan2(dx, -dy) - (math.pi/2)
                         new_bullet = Bullet(self, self.player.rect().center, 10, bullet_angle, (18, 18))
                         self.bullets.append(new_bullet)
+                        self.game_timer -= 1000
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         self.main_menu()
@@ -255,7 +260,7 @@ class Game:
                     elif event.key == pygame.K_s:
                         self.movement[3] = False
                 
-            if self.movement[1] - self.movement[0] == 0 and self.movement[3] - self.movement[2] == 0:
+            if self.movement[1] - self.movement[0] == 0 and self.movement[3] - self.movement[2] == 0 or self.dead:
                 self.slowdown = True
             else:
                 self.slowdown = False
