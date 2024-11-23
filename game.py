@@ -60,8 +60,8 @@ class Game:
         }
 
         self.sfx['shoot'].set_volume(0.8)
-        self.sfx['select'].set_volume(0.8)
-        self.sfx['player_death'].set_volume(0.8)
+        self.sfx['select'].set_volume(0.5)
+        self.sfx['player_death'].set_volume(1.0)
         self.sfx['enemy_death'].set_volume(0.8)
 
 
@@ -98,7 +98,7 @@ class Game:
                         pygame.quit()
                         sys.exit()
                     if event.key == pygame.K_RETURN:
-                        self.sfx['select'].play(1)
+                        self.sfx['select'].play(0)
                         self.run()
 
             # render the main menu
@@ -124,7 +124,7 @@ class Game:
                         pygame.quit()
                         sys.exit()
                     if event.key == pygame.K_RETURN:
-                        self.sfx['select'].play(1)
+                        self.sfx['select'].play(0)
                         self.main_menu()
 
             # rnder the game over screen
@@ -287,10 +287,10 @@ class Game:
                         dy = mpos[1] - self.player.rect().centery
                         bullet_angle = math.atan2(dx, -dy) - (math.pi/2)
                         new_bullet = Bullet(self, self.player.rect().center, 10, bullet_angle, (18, 18))
-                        self.sfx['shoot'].play(1)
+                        self.sfx['shoot'].play(0)
                         self.bullets.append(new_bullet)
                         self.game_timer -= 1000
-                        self.screenshake = 10
+                        self.screenshake = max(10, self.screenshake)
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         self.main_menu()
@@ -317,6 +317,7 @@ class Game:
                 self.slowdown = True
             else:
                 self.slowdown = False
+            
 
             screenshake_offset = (random.random() * self.screenshake - self.screenshake / 2, random.random() * self.screenshake - self.screenshake / 2)
             self.screen.blit(pygame.transform.scale(self.display, self.screen_size), screenshake_offset)

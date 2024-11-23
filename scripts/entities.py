@@ -153,6 +153,7 @@ class Enemy(PhysicsEntity):
         super().update(tilemap, movement=enemy_movement)
         if self.rect().colliderect(self.game.player.rect()):
             self.game.dead += 1
+            self.game.sfx['player_death'].play(0)
             
 
     def render(self, surf, offset=(0, 0)):
