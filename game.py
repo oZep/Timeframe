@@ -98,6 +98,8 @@ class Game:
 
         self.deltatime = 0
 
+        self.game_timer = 60000
+
         # creating an infinite game loop
         while True:
             self.display.fill((255, 255, 255))
@@ -105,13 +107,21 @@ class Game:
 
             self.screenshake = max(0, self.screenshake-1) # resets screenshake value
 
+            self.game_timer -= self.deltatime * (1 + self.slowdown * 2)
+
             if self.dead: # get hit once
                 self.dead += 1
             
             #Count down, if time elapse spawn enemy
             self.enemy_timer -= self.deltatime
             if self.enemy_timer < 0:
-                enemy_pos = (100, 100)
+                enemy_pos = [100, 100]
+                if random.randint(0, 1) == 0:
+                    enemy_pos[0] = 0 + (self.display.get_width() * random.randint(0, 1))
+                    enemy_pos[1] = random.randint(0, self.display.get_height())
+                else:
+                    enemy_pos[1] = 0 + (self.display.get_height() * random.randint(0, 1))
+                    enemy_pos[0] = random.randint(0, self.display.get_width())
                 new_enemy = Enemy(self, enemy_pos, (42, 42))
                 self.enemies.append(new_enemy)
                 #next wait (milliseconds)
