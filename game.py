@@ -5,9 +5,8 @@ import random
 import pygame
 
 from scripts.utils import load_image, load_images, Animation
-from scripts.entities import PhysicsEntity, Player, Enemy
+from scripts.entities import Player
 from scripts.tilemap import Tilemap
-from scripts.particle import Particle
 
 
 class Game:
@@ -28,16 +27,13 @@ class Game:
         
         self.movement = [False, False, False, False]  # left, right, up, down
         self.slowdown = 0 # slow down the game
+        self.game_speed = 1
 
         self.assets = {
             'ground': load_images('tiles/ground'),
             'obstacles': load_images('tiles/obstacles'),
             'player': load_image('entities/player.png'),
             'player/idle': Animation(load_images('entities/player/idle'), img_dur=6),
-            'player/run': Animation(load_images('entities/player/run'), img_dur=4),
-            'player/jump': Animation(load_images('entities/player/jump')),
-            'player/slide': Animation(load_images('entities/player/slide')),
-            'player/wall_slide': Animation(load_images('entities/player/wall_slide')),
             'particle/leaf': Animation(load_images('particles/leaf'), img_dur=20, loop=False),
             'particle/particle': Animation(load_images('particles/particle'), img_dur=6, loop=False),
             'gun': load_image('gun.png'),
@@ -85,7 +81,9 @@ class Game:
 
             self.tilemap.render(self.display, offset=render_scroll)
 
-
+            # handle changes in game speed
+            if self.slowdown:
+                self.game_speed = 0.5
 
             if not self.dead:
                 # update player movement
