@@ -30,10 +30,9 @@ class Game:
         self.slowdown = 0 # slow down the game
 
         self.assets = {
-            'decor': load_images('tiles/ground'),
+            'ground': load_images('tiles/ground'),
             'obstacles': load_images('tiles/obstacles'),
             'player': load_image('entities/player.png'),
-            'background': load_image('background.png'),
             'player/idle': Animation(load_images('entities/player/idle'), img_dur=6),
             'player/run': Animation(load_images('entities/player/run'), img_dur=4),
             'player/jump': Animation(load_images('entities/player/jump')),
