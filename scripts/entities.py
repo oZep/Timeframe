@@ -2,7 +2,6 @@ import pygame
 import math
 import random
 
-from scripts.particle import Particle
 
 class PhysicsEntity:
     def __init__(self, game, e_type, pos, size):
@@ -18,8 +17,12 @@ class PhysicsEntity:
         self.collisions = {'up': False, 'down': False, 'left': False, 'right': False}
 
         self.action = ''
+<<<<<<< HEAD
         self.anim_offset = (0, 0) #renders with an offset to pad the animation against the hitbox
         self.flip = False
+=======
+        self.anim_offset = (-3, -3) #renders with an offset to pad the animation against the hitbox
+>>>>>>> 5cfe26bbd7af031c4392f1f180c4b2d1cd98d060
         self.set_action('idle')
 
         self.last_movement = [0, 0]
@@ -47,7 +50,7 @@ class PhysicsEntity:
         '''
         self.collisions = {'up': False, 'down': False, 'left': False, 'right': False} # this value will be reset every frame, used to stop constant increase of velocity
 
-        frame_movement = (movement[0] + self.velocity[0], movement[1] + self.velocity[1])
+        frame_movement = ((movement[0] + self.velocity[0]) * self.game.game_speed, (movement[1] + self.velocity[1]) * self.game.game_speed) # movement based on velocity
 
         self.pos[0] += frame_movement[0]
         entity_rect = self.rect() # getting the entities rectange
@@ -77,11 +80,6 @@ class PhysicsEntity:
                     self.collisions['up'] = True
                 self.pos[1] = entity_rect.y
 
-        # find when to flip img for animation
-        if movement[0] > 0:
-            self.flip = False
-        if movement[0] < 0:
-            self.flip = True
 
         self.last_movement = movement # keeps track of movement
 
@@ -96,7 +94,7 @@ class PhysicsEntity:
         '''
         renders entitiy asset
         '''
-        surf.blit(pygame.transform.flip(self.animation.img(), self.flip, False), (self.pos[0] - offset[0] + self.anim_offset[0], self.pos[1] - offset[1] + self.anim_offset[1])) # fliping agasint horizontal axis
+        surf.blit(pygame.transform.flip(self.animation.img(), False, False), (self.pos[0] - offset[0] + self.anim_offset[0], self.pos[1] - offset[1] + self.anim_offset[1])) # fliping agasint horizontal axis
 
 
 

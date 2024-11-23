@@ -86,6 +86,8 @@ class Game:
             # handle changes in game speed
             if self.slowdown:
                 self.game_speed = 0.5
+            else:
+                self.game_speed = 1
 
             if not self.dead:
                 # update player movement
