@@ -29,6 +29,12 @@ class Image:
         '''
         surf.blit(self.img, self.pos)
 
+    def scale(self, scale):
+        '''
+        scales the image
+        '''
+        self.img = pygame.transform.scale(self.img, (self.img.get_width() * scale, self.img.get_height() * scale))
+
 class Text:
     def __init__(self, level, pos=[0,0]):
         '''

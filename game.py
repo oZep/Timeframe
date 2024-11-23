@@ -8,6 +8,7 @@ from scripts.utils import load_image, load_images, Animation
 from scripts.entities import Player, Enemy
 from scripts.tilemap import Tilemap
 from scripts.UI import Text
+from scripts.menu import Menu
 
 
 class Game:
@@ -39,6 +40,12 @@ class Game:
             'enemy/idle': Animation(load_images('entities/enemy/idle'), img_dur=6),
             'target': load_image('entities/target_round_a.png'),
             'playerbullet/idle': load_image('entities/PlayerBullet.png'),
+            'W': load_image('UI/W.png'),
+            'A': load_image('UI/A.png'),
+            'S': load_image('UI/S.png'),
+            'D': load_image('UI/D.png'),
+            'ESC': load_image('UI/ESC.png'),
+            'click': load_image('UI/click.png'),
         }
 
 
@@ -76,6 +83,12 @@ class Game:
                         sys.exit()
                     if event.key == pygame.K_RETURN:
                         self.run()
+
+            # render the main menu
+            menu = Menu(self, self.tilemap)
+            menu.update()
+            menu.render()
+
             
             self.screen.blit(pygame.transform.scale(self.display, self.screen_size), [0,0])
             pygame.display.update()
