@@ -1,6 +1,5 @@
 import pygame
 import math
-import random
 
 
 class PhysicsEntity:
@@ -95,13 +94,6 @@ class PhysicsEntity:
         '''
         surf.blit(pygame.transform.flip(self.animation.img(), False, False), (self.pos[0] - offset[0] + self.anim_offset[0], self.pos[1] - offset[1] + self.anim_offset[1])) # fliping agasint horizontal axis
 
-    def shoot(self, target, bullet_type):
-        '''
-        shoots a bullet
-        '''
-        bullet = Bullet(self.game, self.pos, (8, 8), target, bullet_type)
-        self.game.bullets.append(bullet)
-
 class Player(PhysicsEntity):
     def __init__(self, game, pos, size):
         '''
@@ -132,13 +124,6 @@ class Player(PhysicsEntity):
         '''
         super().render(surf, offset=offset) # show player
 
-    def shoot(self, target):
-        '''
-        shoots a bullet
-        '''
-        super().shoot(target, 'player')
-            
-
 class Enemy(PhysicsEntity):
     def __init__(self, game, pos, size):
         '''
@@ -160,65 +145,3 @@ class Enemy(PhysicsEntity):
 
     def render(self, surf, offset=(0, 0)):
         super().render(surf, offset=offset)
-
-    def shoot(self, target):
-        '''
-        shoots a bullet
-        '''
-        super().shoot(target, 'enemy')
-
-        
-
-class Bullet(PhysicsEntity):
-    def __init__(self, game, pos, size, target, bullet_type):
-        '''
-        instantiates the bullets
-        (game, position: tuple, size, target)
-        '''
-        super().__init__(game, bullet_type+'bullet', pos, size)
-        self.target = target
-        self.speed = 10
-        self.type = bullet_type
-
-    def update(self, tilemap, movement=(0,0)):
-        '''
-        updates the bullets position
-        '''
-        super().update(tilemap, movement=movement)
-
-        # move towards target in top down
-        angle = math.atan2(self.target[1] - self.pos[1], self.target[0] - self.pos[0])
-        self.velocity = [math.cos(angle) * self.speed, math.sin(angle) * self.speed]
-
-        # check if bullet is out of bounds
-        if self.pos[0] < 0 or self.pos[0] > self.game.tilemap.size[0] or self.pos[1] < 0 or self.pos[1] > self.game.tilemap.size[1]:
-            self.game.bullets.remove(self)
-
-                # check if bullet collides with player
-        if self.rect().colliderect(self.game.player.rect()) and self.type == 'enemy':
-            self.game.bullets.remove(self)
-            self.game.player.health -= 1
-
-        # check if bullet collides with enemy
-        for enemy in self.game.enemies:
-            if self.rect().colliderect(enemy.rect()) and self.type == 'player':
-                self.game.bullets.remove(self)
-                enemy.health -= 1
-        
-        # check if bullet collides with tile
-        for rect in tilemap.physics_rects_around(self.pos):
-            if self.rect().colliderect(rect):
-                self.game.bullets.remove(self)
-        
-        
-            
-    def render(self, surf, offset=(0, 0)):
-        '''
-        renders the bullet
-        '''
-        if self.type == 'playerbullet':
-            surf.blit(self.game.assets['playerbullet'], (self.pos[0] - offset[0], self.pos[1] - offset[1]))
-        #else:
-        #    surf.blit(self.game.assets['bullet'], (self.pos[0] - offset[0], self.pos[1] - offset[1]))
-
-       
