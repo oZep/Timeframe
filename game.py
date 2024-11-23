@@ -85,7 +85,7 @@ class Game:
                         self.run()
 
             # render the main menu
-            menu = Menu(self, self.tilemap)
+            menu = Menu(self)
             menu.update()
             menu.render()
 
