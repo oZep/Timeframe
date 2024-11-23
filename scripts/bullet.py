@@ -1,5 +1,8 @@
 import math
 import pygame
+import random
+
+from scripts.spark import Spark
 
 class Bullet():
     def __init__(self, game, pos, velocity, angle, size=(18, 18), type='player'):
@@ -25,6 +28,7 @@ class Bullet():
                 for enemy in self.game.enemies.copy():
                     rect = enemy.rect()
                     if rect.collidepoint(self.pos):
+                        self.spark(self.angle)
                         self.game.enemies.remove(enemy)
                         if not self.game.dead:
                             self.game.game_timer += 5000
@@ -32,5 +36,12 @@ class Bullet():
             elif self.type == 'enemy':
                 rect = self.game.player.rect()
                 if rect.collidepoint(self.pos):
+                    self.spark(self.angle)
                     self.game.dead += 1
                     return True
+    
+    def spark(self, angle):
+        angle_range = math.pi/3
+        for i in range(10):
+            new_spark = Spark(self.pos, (angle - angle_range/2 + (random.random() * angle_range)), random.random() * 5 + 3)
+            self.game.sparks.append(new_spark)
