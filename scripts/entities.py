@@ -134,8 +134,7 @@ class Player(PhysicsEntity):
         '''
         shoots a bullet
         '''
-        bullet = Bullet(self.game, self.pos, (8, 8), target, bullet_type='player')
-        self.bullets.append(bullet)
+        super().shoot(target, 'playerbullet')
             
 
 class Enemy(PhysicsEntity):
@@ -163,8 +162,7 @@ class Enemy(PhysicsEntity):
         '''
         shoots a bullet
         '''
-        bullet = Bullet(self.game, self.pos, (8, 8), target, bullet_type='enemy')
-        self.bullets.append(bullet)
+        super().shoot(target, 'enemy')
 
         
 

@@ -76,7 +76,7 @@ class Game:
                     if event.key == pygame.K_RETURN:
                         self.run()
             
-            self.screen.blit(pygame.transform.scale(self.display, self.screen_size))
+            self.screen.blit(pygame.transform.scale(self.display, self.screen_size), [0,0])
             pygame.display.update()
             self.deltatime = self.clock.tick(60) # run at 60 fps, like a sleep
 
