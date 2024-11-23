@@ -35,7 +35,7 @@ class Game:
             'obstacles': load_images('tiles/obstacles'),
             'player': load_image('entities/player.png'),
             'player/idle': Animation(load_images('entities/player/idle'), img_dur=6),
-            'cursor': load_image('entities/cursor.png')
+            'target': load_image('entities/target_round_a.png')
         }
 
 
@@ -99,7 +99,7 @@ class Game:
             # player cursor display bulleye
             mpos = pygame.mouse.get_pos() # gets mouse positon
             mpos = (mpos[0] / (self.screen_size[0]/self.display.get_width()), mpos[1] / (self.screen_size[1]/self.display.get_height())) # since screen sometimes scales
-            self.display.blit(pygame.transform.scale(self.assets['cursor'], (32, 32)), (mpos[0], mpos[1]))
+            self.display.blit(pygame.transform.scale(self.assets['target'], (32, 32)), (mpos[0], mpos[1]))
 
 
             for event in pygame.event.get():
