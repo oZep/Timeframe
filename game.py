@@ -32,10 +32,8 @@ class Game:
         self.movement = [False, False]
 
         self.assets = {
-            'decor': load_images('tiles/decor'),
-            'grass': load_images('tiles/grass'),
-            'large_decor': load_images('tiles/large_decor'),
-            'stone': load_images('tiles/stone'),
+            'decor': load_images('tiles/ground'),
+            'obstacles': load_images('tiles/obstacles'),
             'player': load_image('entities/player.png'),
             'background': load_image('background.png'),
             'clouds': load_images('clouds'),
@@ -73,7 +71,7 @@ class Game:
         self.player = Player(self, (100, 100), (8, 15))
 
         # initalizing tilemap
-        self.tilemap = Tilemap(self, tile_size=16)
+        self.tilemap = Tilemap(self, tile_size=64)
 
         # tracking level
         self.level = 0

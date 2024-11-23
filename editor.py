@@ -23,17 +23,14 @@ class Editor:
         self.clock = pygame.time.Clock()
         
         self.assets = {
-            'decor': load_images('tiles/decor'),
-            'grass': load_images('tiles/grass'),
-            'large_decor': load_images('tiles/large_decor'),
-            'stone': load_images('tiles/stone'),
-            'spawners': load_images('tiles/spawners')
+            'ground': load_images('tiles/ground'),
+            'obstacles': load_images('tiles/obstacles'),
         }
         
         self.movement = [False, False, False, False] # camera movement in all 4 directions
 
         #initalizing tilemap
-        self.tilemap = Tilemap(self, tile_size=16)
+        self.tilemap = Tilemap(self, tile_size=64)
 
         try: # only load the map if it exists
             self.tilemap.load('map.json')

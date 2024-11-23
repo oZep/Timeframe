@@ -14,14 +14,14 @@ AUTOTILE_MAP = {
     tuple(sorted([(1, 0), (-1, 0), (0, 1), (0, -1)])): 8,
 }
 NEIGHBOR_OFFSET = [(-1, 0), (-1, -1), (0, -1), (1, -1), (1, 0), (0, 0), (-1, 1), (0, 1), (1, 1)]
-PHYSICS_TILES = {'grass', 'stone'}
-AUTOTILE_TYPES = {'grass', 'stone'}
+PHYSICS_TILES = {'obstacles'}
+AUTOTILE_TYPES = {}
 
 class Tilemap:
-    def __init__(self, game, tile_size=16):
+    def __init__(self, game, tile_size=64):
         '''
         initializing tilemap
-        (game, tile size 16x16 px)
+        (game, tile size 64x64 px)
         '''
         self.game = game
         self.tile_size = tile_size
