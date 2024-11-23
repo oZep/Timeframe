@@ -118,66 +118,6 @@ class Player(PhysicsEntity):
         '''
         super().update(tilemap, movement=movement)
 
-        self.air_time += 1
-
-        # falling, falling, and well, falling
-        if self.air_time > 120:
-            if not self.game.dead:
-                self.game.screenshake = max(16, self.game.screenshake)  # apply screenshake
-            self.game.dead += 1
-
-        if self.collisions['down']: # collide with the floor
-            self.air_time = 0
-            # restore the jumps
-            self.jumps = 1
-
-        self.wall_slide = False # reset every frame
-        if (self.collisions['right'] or self.collisions['left']) and self.air_time > 4: # if player connects with a wall
-            self.wall_slide = True
-            self.velocity[1] = min(self.velocity[1], 0.5) # slow down falling
-            if self.collisions['right']: # determine which animation to show
-                self.flip = False
-                self.set_action('wall_slide')
-            else:
-                self.flip = True
-                self.set_action('wall_slide')
-
-        if not self.wall_slide: 
-            if self.air_time > 4: # in air for some time (highest priority)
-                self.set_action('jump')
-            elif movement[0] != 0: # if moving horizontally
-                self.set_action('run')
-            else:
-                self.set_action('idle')
-        
-
-        if abs(self.dashing) in (60, 50): # if at start or end of dash
-            for i in range(20): # do 20 times
-                # for burst of particles
-                angle = random.random() * math.pi * 2
-                speed = random.random() * 0.5 + 0.5 # random from 0.5 to 1
-                pvelocity = [math.cos(angle) * speed, math.sin(angle) * speed]
-                self.game.particles.append(Particle(self.game, 'particle', self.rect().center, velocity=pvelocity, frame=random.randint(0, 7)))
-        # dash cooldown
-        if self.dashing > 0:
-            self.dashing = max(0, self.dashing - 1)
-        if self.dashing < 0:
-            self.dashing = min(0, self.dashing + 1)
-        # dash mechanism (only works in first 10 frames of 'dashing')
-        if abs(self.dashing) > 50:
-            self.velocity[0] = abs(self.dashing) / self.dashing * 8 #dash/dash gives direction which is applied to speed
-            if abs(self.dashing) == 51: # slow down dash after 10 frames
-                self.velocity[0] *= 0.1
-            # trail of particles in the middle of dash
-            pvelocity = [abs(self.dashing)/self.dashing * random.random() * 3, 0] # particles move in the direction of the dash
-            self.game.particles.append(Particle(self.game, 'particle', self.rect().center, velocity=pvelocity, frame=random.randint(0, 7)))
-
-        
-        # normalize horizontal vel "HORIZONTAL"
-        if self.velocity[0] > 0:
-            self.velocity[0] = max(self.velocity[0] - 0.1, 0) # right falling to left
-        else:
-            self.velocity[0] = min(self.velocity[0] + 0.1, 0) # left falling to to right
 
     def render(self, surf, offset={0,0}):
         '''
@@ -191,35 +131,11 @@ class Player(PhysicsEntity):
         makes player jump
         -> bool if jump occurs
         '''
-        if self.wall_slide:
-            if self.flip and self.last_movement[0] < 0: # facing left and last movement is towards left wall
-                self.velocity[0] = 3.5 
-                self.velocity[1] = -2.5
-                self.air_time = 5
-                self.jumps = max(0, self.jumps -1) # allows player to always wall jump, but we want to consume a jump if they have it, max so min = 0
-                return True
-            elif not self.flip and self.last_movement[0] > 0:
-                self.velocity[0] = -3.5
-                self.velocity[1] = -2.5
-                self.air_time = 5
-                self.jumps = max(0, self.jumps -1) 
-                return True
-        elif self.jumps: # if jump = 0, returns false
-            self.velocity[1] = -3
-            self.jumps -= 1 # count down jumps
-            self.air_time = 5 # allows jump animation to start
-            return True
     
     def dash(self):
         '''
         makes the player dash
         '''
-        if not self.dashing:
-            self.game.sfx['dash'].play()
-            if self.flip:
-                self.dashing = -60
-            else:
-                self.dashing = 60 # how long the dash is + it's direction
             
 
 class Enemy(PhysicsEntity):
