@@ -17,13 +17,12 @@ class Game:
         pygame.init()
 
         # change the window caption
-        pygame.display.set_caption("Pok N Wack")
+        pygame.display.set_caption("Time Dilemma")
 
-        
         # create window
-        self.screen = pygame.display.set_mode((1920,1080), pygame.FULLSCREEN)
-
-        self.display = pygame.Surface((1280,720)) # render on different resolution then scale it up to screen
+        self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
+        self.screen_size = pygame.display.get_surface().get_size()
+        self.display = pygame.Surface((1920, 1080))
 
         self.clock = pygame.time.Clock()
         
@@ -36,13 +35,11 @@ class Game:
             'obstacles': load_images('tiles/obstacles'),
             'player': load_image('entities/player.png'),
             'player/idle': Animation(load_images('entities/player/idle'), img_dur=6),
-            'gun': load_image('gun.png'),
-            'projectile': load_image('projectile.png'),
         }
 
 
         # initalizing player
-        self.player = Player(self, (self.screen.get_width()/2, self.screen.get_height()/2), (42, 42))
+        self.player = Player(self, (self.display.get_width()/2, self.display.get_height()/2), (42, 42))
 
         # initalizing tilemap
         self.tilemap = Tilemap(self, tile_size=64)
@@ -131,7 +128,7 @@ class Game:
                         self.slowdown = False
 
             screenshake_offset = (random.random() * self.screenshake - self.screenshake / 2, random.random() * self.screenshake - self.screenshake / 2)
-            self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), screenshake_offset)
+            self.screen.blit(pygame.transform.scale(self.display, self.screen_size), screenshake_offset)
             pygame.display.update()
             self.clock.tick(60) # run at 60 fps, like a sleep
 

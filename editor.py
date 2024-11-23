@@ -15,10 +15,12 @@ class Editor:
 
         # change the window caption
         pygame.display.set_caption("editor")
-        # create window
-        self.screen = pygame.display.set_mode((1920,1080))
 
-        self.display = pygame.Surface((1920,1080)) # render on different resolution then scale it up to screen if needed
+        # create window
+        self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
+        self.screen_size = pygame.display.get_surface().get_size()
+
+        self.display = pygame.Surface((1920, 1080)) # render on different resolution then scale it up to screen if needed
 
         self.clock = pygame.time.Clock()
         
@@ -32,8 +34,10 @@ class Editor:
         #initalizing tilemap
         self.tilemap = Tilemap(self, tile_size=64)
 
+        self.curr_level = 'ground'
+
         try: # only load the map if it exists
-            self.tilemap.load('map.json')
+            self.tilemap.load(self.curr_level + '.json')
         except FileNotFoundError:
             pass
 
@@ -70,7 +74,7 @@ class Editor:
             #current_tile_img.set_alpha(150) # partially transparent, 0 -> full, 255 -> none
 
             mpos = pygame.mouse.get_pos() # gets mouse positon
-            mpos = (mpos[0] / RENDER_SCALE, mpos[1] / RENDER_SCALE) # since screen sometimes scales
+            mpos = (mpos[0] / (self.screen_size[0]/self.display.get_width()), mpos[1] / (self.screen_size[1]/self.display.get_height())) # since screen sometimes scales
             tile_pos = (int((mpos[0] + self.scroll[0]) // self.tilemap.tile_size), int((mpos[1] + self.scroll[1]) // self.tilemap.tile_size)) #coord of mouse in refernce to tile map, snaps img to grid
 
             # indicate where tile will be placed
@@ -141,7 +145,7 @@ class Editor:
                     if event.key == pygame.K_g: # switch drawing on/offgrid 
                         self.ongrid = not self.ongrid
                     if event.key == pygame.K_o: # same tilemap
-                        self.tilemap.save('map.json') # path we are saving it to
+                        self.tilemap.save(self.curr_level + '.json') # path we are saving it to
                     if event.key == pygame.K_t:
                         self.tilemap.autotile()
                 if event.type == pygame.KEYUP: # when key is released
