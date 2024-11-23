@@ -7,9 +7,9 @@ import pygame
 from scripts.utils import load_image, load_images, Animation
 from scripts.entities import PhysicsEntity, Player, Enemy
 from scripts.tilemap import Tilemap
-from scripts.clouds import Clouds
 from scripts.particle import Particle
 from scripts.spark import Spark
+from scripts.UI import Image, Text
 
 class Game:
     def __init__(self):
@@ -33,11 +33,12 @@ class Game:
         self.slowdown = 0 # slow down the game
 
         self.assets = {
-            'decor': load_images('tiles/ground'),
-            'obstacles': load_images('tiles/obstacles'),
+            'decor': load_images('tiles/decor'),
+            'grass': load_images('tiles/grass'),
+            'large_decor': load_images('tiles/large_decor'),
+            'stone': load_images('tiles/stone'),
             'player': load_image('entities/player.png'),
             'background': load_image('background.png'),
-            'clouds': load_images('clouds'),
             'enemy/idle': Animation(load_images('entities/enemy/idle'), img_dur=6),
             'enemy/run': Animation(load_images('entities/enemy/run'), img_dur=4),
             'player/idle': Animation(load_images('entities/player/idle'), img_dur=6),
@@ -51,47 +52,30 @@ class Game:
             'projectile': load_image('projectile.png'),
         }
 
-        # adding sound
-        self.sfx = {
-            'jump': pygame.mixer.Sound('data/sfx/jump.wav'),
-            'dash': pygame.mixer.Sound('data/sfx/dash.wav'),
-            'hit': pygame.mixer.Sound('data/sfx/hit.wav'),
-            'shoot': pygame.mixer.Sound('data/sfx/shoot.wav'),
-            'ambience': pygame.mixer.Sound('data/sfx/ambience.wav'),
-        }
-        
-        self.sfx['ambience'].set_volume(0.2)
-        self.sfx['shoot'].set_volume(0.4)
-        self.sfx['hit'].set_volume(0.8)
-        self.sfx['dash'].set_volume(0.3)
-        self.sfx['jump'].set_volume(0.7)
-
-        self.clouds = Clouds(self.assets['clouds'], count=16)
-
         # initalizing player
         self.player = Player(self, (100, 100), (8, 15))
 
         # initalizing tilemap
-        self.tilemap = Tilemap(self, tile_size=64)
+        self.tilemap = Tilemap(self, tile_size=16)
 
-        # tracking level
-        self.level = 0
         self.max_level = len(os.listdir('data/maps')) # max level
         # loading the level
-        self.load_level(self.level)
+        self.load_level(0)
 
         # screen shake
         self.screenshake = 0
 
+        self.counter = 0 
 
-    def load_level(self, map_id):
+
+    def restart(self, map_id):
         self.tilemap.load('data/maps/' + str(map_id) + '.json')
 
         # keep track
         self.particles = []
 
         # creating 'camera' 
-        self.scroll = [0, 0]
+        self.scroll = [0, 0, 0, 0]
 
         self.dead = 0
 
@@ -100,12 +84,6 @@ class Game:
 
         # transition for levels
         self.transition = -30
-
-        # leaf particle affect
-        self.leaf_spawners = []
-        for tree in self.tilemap.extract([('large_decor', 2)], keep=True):
-            self.leaf_spawners.append(pygame.Rect((4 + tree['pos'][0]), (4 + tree['pos'][1]), 23, 13)) # offsetting by 4 due to tree sprite
-            # Rect(x, y, width, height)
 
         # spawn the ememies
         self.enemies = []
@@ -135,21 +113,12 @@ class Game:
 
             self.screenshake = max(0, self.screenshake-1) # resets screenshake value
 
-            # level transiition
-            if not len(self.enemies): # no enemies
-                self.transition += 1 # start timer, increasing value past 0
-                if self.transition > 30: 
-                    self.level = min(self.level + 1, self.max_level) # increase level
-                    self.load_level(self.level) # -1 since we start at level 0
-            if self.transition < 0:
-                self.transition += 1 # goes up automatically until 0
-
             if self.dead: # get hit once
                 self.dead += 1
                 if self.dead >= 10: # to make the level transitions smoother
                     self.transition = min(self.transition + 1, 30) # go as high as it can without changing level
                 if self.dead > 40: # timer that starts when you die
-                    self.load_level(self.level)
+                    self.restart(0)
 
             # move 'camera' to focus on player, make him the center of the screen
             # scroll = current scroll + (where we want the camera to be - what we have/can see currently) 
@@ -164,9 +133,6 @@ class Game:
                 if random.random() * 49999 < rect.width * rect.height:
                     pos = (rect.x + random.random() * rect.width, rect.y + random.random() * rect.height)
                     self.particles.append(Particle(self, 'leaf', pos, velocity=[-0.1, 0.3], frame=random.randint(0, 20)))
-
-            self.clouds.update() # updates clouds before the rest of the tiles
-            self.clouds.render(self.display_2, offset=render_scroll)
 
             self.tilemap.render(self.display, offset=render_scroll)
 
