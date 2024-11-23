@@ -153,7 +153,7 @@ class Game:
         self.game_speed = 1
 
         #Enemy spawn wait (milliseconds)
-        self.enemy_timer_reset = 2000
+        self.enemy_timer_reset = 1600
         self.enemy_timer = self.enemy_timer_reset
 
         self.enemies = []
@@ -164,7 +164,7 @@ class Game:
 
         self.game_timer = 30000
 
-        self.slowdown_timer_change = 5
+        self.slowdown_timer_change = 3
 
         self.has_moved = False
 
@@ -228,7 +228,7 @@ class Game:
 
             # handle changes in game speed
             if self.slowdown:
-                self.game_speed = 0.2
+                self.game_speed = 0.4
             else:
                 self.game_speed = 1
             
@@ -286,7 +286,7 @@ class Game:
                         dx = mpos[0] - self.player.rect().centerx
                         dy = mpos[1] - self.player.rect().centery
                         bullet_angle = math.atan2(dx, -dy) - (math.pi/2)
-                        new_bullet = Bullet(self, self.player.rect().center, 10, bullet_angle, (18, 18))
+                        new_bullet = Bullet(self, self.player.rect().center, 7, bullet_angle, (18, 18))
                         self.sfx['shoot'].play(0)
                         self.bullets.append(new_bullet)
                         self.game_timer -= 1000

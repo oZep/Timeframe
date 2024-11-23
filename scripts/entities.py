@@ -133,7 +133,8 @@ class Enemy(PhysicsEntity):
         '''
         super().__init__(game, 'enemy', pos, size)
         self.set_action('idle')
-        self.shoot_wait = 1000
+        self.shoot_speed = 700
+        self.shoot_wait = self.shoot_speed
     
     def update(self, tilemap, movement=(0,0)):
         self.shoot_wait -= self.game.deltatime * (1 - (self.game.slowdown * (self.game.slowdown_timer_change-1)/self.game.slowdown_timer_change))
@@ -141,9 +142,9 @@ class Enemy(PhysicsEntity):
             dx = self.game.player.rect().centerx - self.rect().centerx
             dy = self.game.player.rect().centery - self.rect().centery
             bullet_angle = math.atan2(dx, -dy) - (math.pi/2)
-            new_bullet = Bullet(self.game, self.rect().center, 10, bullet_angle, size=(18, 18), type='enemy')
+            new_bullet = Bullet(self.game, self.rect().center, 7, bullet_angle, size=(18, 18), type='enemy')
             self.game.bullets.append(new_bullet)
-            self.shoot_wait = 1000
+            self.shoot_wait = self.shoot_speed
         enemy_movement = movement
         movement_magnitude = math.sqrt((movement[0] * movement[0] + movement[1] * movement[1]))
         if movement_magnitude > 0:
@@ -152,8 +153,9 @@ class Enemy(PhysicsEntity):
 
         super().update(tilemap, movement=enemy_movement)
         if self.rect().colliderect(self.game.player.rect()):
+            if not self.game.dead:
+                self.game.sfx['player_death'].play(0)
             self.game.dead += 1
-            self.game.sfx['player_death'].play(0)
             
 
     def render(self, surf, offset=(0, 0)):

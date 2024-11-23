@@ -35,7 +35,7 @@ class Bullet():
                         return True
             elif self.type == 'enemy':
                 rect = self.game.player.rect()
-                if rect.collidepoint(self.pos):
+                if rect.collidepoint(self.pos) and not self.game.dead:
                     self.spark(self.angle)
                     self.game.sfx['player_death'].play(0)
                     self.game.screenshake = max(25, self.game.screenshake)
