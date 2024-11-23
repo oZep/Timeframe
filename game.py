@@ -7,9 +7,8 @@ import pygame
 from scripts.utils import load_image, load_images, Animation
 from scripts.entities import PhysicsEntity, Player, Enemy
 from scripts.tilemap import Tilemap
-from scripts.clouds import Clouds
 from scripts.particle import Particle
-from scripts.spark import Spark
+
 
 class Game:
     def __init__(self):
@@ -52,9 +51,14 @@ class Game:
 
         # initalizing tilemap
         self.tilemap = Tilemap(self, tile_size=64)
+        self.tilemap.load('map.json')
 
         # screen shake
         self.screenshake = 0
+
+        self.dead = 0
+
+        self.scroll = [0, 0]
 
 
     def run(self):
@@ -86,17 +90,8 @@ class Game:
 
             if not self.dead:
                 # update player movement
-                self.player.update(self.tilemap, (self.movement[1] - self.movement[0], 0))
+                self.player.update(self.tilemap, (self.movement[1] - self.movement[0], self.movement[3] - self.movement[2]))
                 self.player.render(self.display, offset=render_scroll)
-            
-
-            # spark affect
-            for spark in self.sparks.copy():
-                kill = spark.update()
-                spark.render(self.display, offset=render_scroll)
-                if kill:
-                    self.sparks.remove(spark)
-
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: # have to code the window closing
