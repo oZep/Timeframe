@@ -42,11 +42,13 @@ class Game:
 
 
         # initalizing player
-        self.player = Player(self, (100, 100), (8, 15))
+        self.player = Player(self, (1920/2, 1080/2), (8, 15))
 
         # initalizing tilemap
         self.tilemap = Tilemap(self, tile_size=64)
         self.tilemap.load('map.json')
+        self.ground = Tilemap(self, tile_size=64)
+        self.ground.load('ground.json')
 
         # screen shake
         self.screenshake = 0
@@ -77,8 +79,10 @@ class Game:
             self.scroll[1] += (self.player.rect().centery - self.display.get_height()/2 - self.scroll[1]) / 30
 
             # fix the jitter
-            render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
+            #render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
+            render_scroll = (0, 0)
 
+            self.ground.render(self.display, offset=render_scroll)
             self.tilemap.render(self.display, offset=render_scroll)
 
             # handle changes in game speed
