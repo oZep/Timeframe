@@ -9,7 +9,7 @@ class Menu():
 
         self.title = Text('Controls', [860, 100])
 
-        self.explain3 = Text('Killing enemies gives you more time.', [660, 540])
+        self.explain3 = Text('Killing enemies gives you more time, but shooting takes time away.', [370, 540])
         self.explain = Text('When you stop moving, everthing slows down, but the timer counts down faster.', [260, 600])
         self.explain2 = Text('Try to die with as much time left!', [680, 660])
         self.explain4 = Text('Press Enter to Play.', [780, 720])
