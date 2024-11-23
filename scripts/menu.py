@@ -12,6 +12,7 @@ class Menu():
         self.explain3 = Text('Killing enemies gives you more time.', [660, 540])
         self.explain = Text('When you stop moving, entities slow down, but the timer counts down faster.', [260, 600])
         self.explain2 = Text('Try to die with as much time left!', [680, 660])
+        self.explain4 = Text('Press Enter to Play.', [780, 720])
 
         # WASD
         # (self, img, pos, speed)
@@ -62,5 +63,6 @@ class Menu():
         self.explain3.render(self.game.display, 50, (0,0,0))
         self.explain.render(self.game.display, 50, (0,0,0))
         self.explain2.render(self.game.display, 50, (0,0,0))
+        self.explain4.render(self.game.display, 50, (0,0,0))
 
 
