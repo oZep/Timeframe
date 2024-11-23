@@ -4,7 +4,7 @@ import pygame
 from scripts.utils import load_images, Animation
 from scripts.tilemap import Tilemap
 
-RENDER_SCALE = 2.0
+RENDER_SCALE = 1.0
 
 class Editor:
     def __init__(self):
@@ -16,9 +16,9 @@ class Editor:
         # change the window caption
         pygame.display.set_caption("editor")
         # create window
-        self.screen = pygame.display.set_mode((640,480))
+        self.screen = pygame.display.set_mode((1920,1080))
 
-        self.display = pygame.Surface((320, 240)) # render on smaller resolution then scale it up to bigger screen
+        self.display = pygame.Surface((1920,1080)) # render on different resolution then scale it up to screen if needed
 
         self.clock = pygame.time.Clock()
         
@@ -67,10 +67,10 @@ class Editor:
             self.tilemap.render(self.display, offset=render_scroll)
 
             current_tile_img = self.assets[self.tile_list[self.tile_group]][self.tile_variant] # select the tile
-            current_tile_img.set_alpha(150) # partially transparent, 0 -> full, 255 -> none
+            #current_tile_img.set_alpha(150) # partially transparent, 0 -> full, 255 -> none
 
             mpos = pygame.mouse.get_pos() # gets mouse positon
-            mpos = (mpos[0] / RENDER_SCALE, mpos[1] / RENDER_SCALE) # since screen scales x2
+            mpos = (mpos[0] / RENDER_SCALE, mpos[1] / RENDER_SCALE) # since screen sometimes scales
             tile_pos = (int((mpos[0] + self.scroll[0]) // self.tilemap.tile_size), int((mpos[1] + self.scroll[1]) // self.tilemap.tile_size)) #coord of mouse in refernce to tile map, snaps img to grid
 
             # indicate where tile will be placed
@@ -92,7 +92,7 @@ class Editor:
                     if tile_r.collidepoint(mpos): # if this tile is colliding with mouse
                         self.tilemap.offgrid_tiles.remove(tile)
 
-            self.display.blit(current_tile_img, (5,5))
+            self.display.blit(current_tile_img, (32, 32))
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: # have to code the window closing
