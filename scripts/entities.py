@@ -13,6 +13,7 @@ class PhysicsEntity:
         self.type = e_type
         self.pos = list(pos) #make sure each entitiy has it's own list, (x,y)
         self.size = size
+        self.speed = 5
         self.velocity = [0,0,0, 0]
         self.collisions = {'up': False, 'down': False, 'left': False, 'right': False}
 
@@ -45,7 +46,7 @@ class PhysicsEntity:
         '''
         self.collisions = {'up': False, 'down': False, 'left': False, 'right': False} # this value will be reset every frame, used to stop constant increase of velocity
 
-        frame_movement = ((movement[0] + self.velocity[0]) * self.game.game_speed, (movement[1] + self.velocity[1]) * self.game.game_speed) # movement based on velocity
+        frame_movement = ((movement[0] + self.velocity[0]) * self.game.game_speed * self.speed, (movement[1] + self.velocity[1]) * self.game.game_speed * self.speed) # movement based on velocity
 
         self.pos[0] += frame_movement[0]
         entity_rect = self.rect() # getting the entities rectange

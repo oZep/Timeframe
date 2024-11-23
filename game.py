@@ -2,7 +2,7 @@ import sys
 import os
 import math
 import random
-import pygame
+import pygame, os
 
 from scripts.utils import load_image, load_images, Animation
 from scripts.entities import Player
@@ -18,6 +18,8 @@ class Game:
 
         # change the window caption
         pygame.display.set_caption("Pok N Wack")
+
+        
         # create window
         self.screen = pygame.display.set_mode((1920,1080), pygame.FULLSCREEN)
 
