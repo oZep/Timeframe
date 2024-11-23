@@ -142,6 +142,9 @@ class Game:
             self.ground.render(self.display, offset=render_scroll)
             self.tilemap.render(self.display, offset=render_scroll)
 
+            for bullet in self.bullets:
+                bullet.render(self.display, offset=render_scroll)
+
             # handle changes in game speed
             if self.slowdown:
                 self.game_speed = 0.2

@@ -127,14 +127,13 @@ class Player(PhysicsEntity):
         '''
         partly overriding rendering for dashing
         '''
-        if abs(self.dashing) <= 50: # not in first 10 frames of dash
-            super().render(surf, offset=offset) # show player
+        super().render(surf, offset=offset) # show player
 
     def shoot(self, target):
         '''
         shoots a bullet
         '''
-        super().shoot(target, 'playerbullet')
+        super().shoot(target, 'player')
             
 
 class Enemy(PhysicsEntity):
@@ -152,11 +151,6 @@ class Enemy(PhysicsEntity):
 
     def render(self, surf, offset=(0, 0)):
         super().render(surf, offset=offset)
-
-        if self.flip:
-            surf.blit(pygame.transform.flip(self.game.assets['gun'], True, False), (self.rect().centerx - 4 - self.game.assets['gun'].get_width() - offset[0], self.rect().centery - offset[1])) # renders the gun in the player
-        else:
-            surf.blit(self.game.assets['gun'], (self.rect().centerx + 4 - offset[0], self.rect().centery - offset[1]))
 
     def shoot(self, target):
         '''
@@ -187,11 +181,33 @@ class Bullet(PhysicsEntity):
         angle = math.atan2(self.target[1] - self.pos[1], self.target[0] - self.pos[0])
         self.velocity = [math.cos(angle) * self.speed, math.sin(angle) * self.speed]
 
+        # check if bullet is out of bounds
+        if self.pos[0] < 0 or self.pos[0] > self.game.tilemap.size[0] or self.pos[1] < 0 or self.pos[1] > self.game.tilemap.size[1]:
+            self.game.bullets.remove(self)
+
+                # check if bullet collides with player
+        if self.rect().colliderect(self.game.player.rect()) and self.type == 'enemy':
+            self.game.bullets.remove(self)
+            self.game.player.health -= 1
+
+        # check if bullet collides with enemy
+        for enemy in self.game.enemies:
+            if self.rect().colliderect(enemy.rect()) and self.type == 'player':
+                self.game.bullets.remove(self)
+                enemy.health -= 1
+        
+        # check if bullet collides with tile
+        for rect in tilemap.physics_rects_around(self.pos):
+            if self.rect().colliderect(rect):
+                self.game.bullets.remove(self)
+        
+        
+            
     def render(self, surf, offset=(0, 0)):
         '''
         renders the bullet
         '''
-        if self.bullet_type == 'playerbullet':
+        if self.type == 'playerbullet':
             surf.blit(self.game.assets['playerbullet'], (self.pos[0] - offset[0], self.pos[1] - offset[1]))
         #else:
         #    surf.blit(self.game.assets['bullet'], (self.pos[0] - offset[0], self.pos[1] - offset[1]))
