@@ -61,6 +61,8 @@ class Game:
         self.ground = Tilemap(self, tile_size=64)
         self.ground.load('ground.json')
 
+        self.formated_timer = '0:00'
+
         # screen shake
         self.screenshake = 0
 
@@ -113,9 +115,13 @@ class Game:
                         self.main_menu()
 
             # rnder the game over screen
-            game_over = GameOver(score)
+            game_over = GameOver(self, score)
             game_over.update()
             game_over.render()
+
+            self.screen.blit(pygame.transform.scale(self.display, self.screen_size), [0,0])
+            pygame.display.update()
+            self.deltatime = self.clock.tick(60) # run at 60 fps, like a sleep
 
 
 
@@ -163,6 +169,9 @@ class Game:
 
             if self.dead: # get hit once
                 self.dead += 1
+                if self.dead > 40:
+                    self.game_over(self.formated_timer)
+                    break
             
             #Count down if has moved, if time elapsed spawn enemy
             if self.has_moved:
@@ -241,6 +250,7 @@ class Game:
                 formatted_timer = str(sec)
                 if int(sec) <= 10:
                     formatted_timer = formatted_timer + '.' + str(ms)
+            self.formated_timer = formatted_timer 
             level_bar.render(self.display, 50, color=(0, 0, 0), text=formatted_timer)
 
             # player cursor display bulleye
