@@ -53,6 +53,8 @@ class Game:
         # screen shake
         self.screenshake = 0
 
+        self.bullets = []
+
         self.dead = 0
 
         self.scroll = [0, 0]

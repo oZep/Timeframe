@@ -23,8 +23,6 @@ class PhysicsEntity:
 
         self.last_movement = [0, 0]
 
-        self.bullets = []
-
     def rect(self):
         '''
         creates a rectangle at the entitiies current postion
@@ -104,7 +102,7 @@ class PhysicsEntity:
         shoots a bullet
         '''
         bullet = Bullet(self.game, self.pos, (8, 8), target, bullet_type)
-        self.bullets.append(bullet)
+        self.game.bullets.append(bullet)
 
 class Player(PhysicsEntity):
     def __init__(self, game, pos, size):
@@ -156,7 +154,17 @@ class Enemy(PhysicsEntity):
     def render(self, surf, offset=(0, 0)):
         super().render(surf, offset=offset)
 
-    
+        if self.flip:
+            surf.blit(pygame.transform.flip(self.game.assets['gun'], True, False), (self.rect().centerx - 4 - self.game.assets['gun'].get_width() - offset[0], self.rect().centery - offset[1])) # renders the gun in the player
+        else:
+            surf.blit(self.game.assets['gun'], (self.rect().centerx + 4 - offset[0], self.rect().centery - offset[1]))
+
+    def shoot(self, target):
+        '''
+        shoots a bullet
+        '''
+        bullet = Bullet(self.game, self.pos, (8, 8), target, bullet_type='enemy')
+        self.bullets.append(bullet)
 
         
 
