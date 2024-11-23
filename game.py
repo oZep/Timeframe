@@ -51,6 +51,19 @@ class Game:
             'click': load_image('UI/click.png'),
         }
 
+        # adding sound
+        self.sfx = {
+            'player_death': pygame.mixer.Sound('data/sfx/player_death.wav'),
+            'enemy_death': pygame.mixer.Sound('data/sfx/enemy_kill.wav'),
+            'select': pygame.mixer.Sound('data/sfx/select.wav'),
+            'shoot': pygame.mixer.Sound('data/sfx/shoot.wav'),
+        }
+
+        self.sfx['shoot'].set_volume(0.8)
+        self.sfx['select'].set_volume(0.8)
+        self.sfx['player_death'].set_volume(0.8)
+        self.sfx['enemy_death'].set_volume(0.8)
+
 
         # initalizing player
         self.player = Player(self, (self.display.get_width()/2, self.display.get_height()/2), (42, 42))
@@ -85,6 +98,7 @@ class Game:
                         pygame.quit()
                         sys.exit()
                     if event.key == pygame.K_RETURN:
+                        self.sfx['select'].play(1)
                         self.run()
 
             # render the main menu
@@ -110,6 +124,7 @@ class Game:
                         pygame.quit()
                         sys.exit()
                     if event.key == pygame.K_RETURN:
+                        self.sfx['select'].play(1)
                         self.main_menu()
 
             # rnder the game over screen
@@ -272,6 +287,7 @@ class Game:
                         dy = mpos[1] - self.player.rect().centery
                         bullet_angle = math.atan2(dx, -dy) - (math.pi/2)
                         new_bullet = Bullet(self, self.player.rect().center, 10, bullet_angle, (18, 18))
+                        self.sfx['shoot'].play(1)
                         self.bullets.append(new_bullet)
                         self.game_timer -= 1000
                         self.screenshake = 10

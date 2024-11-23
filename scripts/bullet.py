@@ -27,6 +27,7 @@ class Bullet():
                     rect = enemy.rect()
                     if rect.collidepoint(self.pos):
                         self.spark(self.angle)
+                        self.game.sfx['enemy_death'].play(1)
                         self.game.enemies.remove(enemy)
                         if not self.game.dead:
                             self.game.game_timer += 5000
@@ -35,6 +36,7 @@ class Bullet():
                 rect = self.game.player.rect()
                 if rect.collidepoint(self.pos):
                     self.spark(self.angle)
+                    self.game.sfx['player_death'].play(1)
                     self.game.dead += 1
                     return True
     
