@@ -59,6 +59,24 @@ class Game:
 
         pygame.mouse.set_visible(False)
 
+    def main_menu(self):
+        while True:
+            self.display.fill((255, 255, 255))
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT: # have to code the window closing
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        pygame.quit()
+                        sys.exit()
+                    if event.key == pygame.K_RETURN:
+                        self.run()
+            
+            self.screen.blit(pygame.transform.scale(self.display, self.screen_size))
+            pygame.display.update()
+            self.deltatime = self.clock.tick(60) # run at 60 fps, like a sleep
 
     def run(self):
         '''
@@ -114,7 +132,7 @@ class Game:
 
             # handle changes in game speed
             if self.slowdown:
-                self.game_speed = 0.5
+                self.game_speed = 0.2
             else:
                 self.game_speed = 1
             
@@ -143,29 +161,26 @@ class Game:
                         self.main_menu()
                     if event.key == pygame.K_a: # referencing right and left arrow keys
                         self.movement[0] = True
-                        self.slowdown = False
                     elif event.key == pygame.K_d: 
                         self.movement[1] = True
-                        self.slowdown = False
                     elif event.key == pygame.K_w:
                         self.movement[2] = True
-                        self.slowdown = False
                     elif event.key == pygame.K_s:
                         self.movement[3] = True
-                        self.slowdown = False
-                    else:
-                        self.slowdown = True
                 if event.type == pygame.KEYUP: # when key is released
                     if event.key == pygame.K_a: 
                         self.movement[0] = False
-                    if event.key == pygame.K_d: 
+                    elif event.key == pygame.K_d: 
                         self.movement[1] = False
-                    if event.key == pygame.K_w:
+                    elif event.key == pygame.K_w:
                         self.movement[2] = False
-                    if event.key == pygame.K_s:
+                    elif event.key == pygame.K_s:
                         self.movement[3] = False
-                    if event.key == pygame.K_x:
-                        self.slowdown = False
+                
+                if not self.movement[0] and not self.movement[1] and not self.movement[2] and not self.movement[3]:
+                    self.slowdown = True
+                else:
+                    self.slowdown = False
 
             screenshake_offset = (random.random() * self.screenshake - self.screenshake / 2, random.random() * self.screenshake - self.screenshake / 2)
             self.screen.blit(pygame.transform.scale(self.display, self.screen_size), screenshake_offset)
