@@ -2,7 +2,6 @@ import pygame
 import math
 import random
 
-from scripts.particle import Particle
 
 class PhysicsEntity:
     def __init__(self, game, e_type, pos, size):
@@ -47,7 +46,7 @@ class PhysicsEntity:
         '''
         self.collisions = {'up': False, 'down': False, 'left': False, 'right': False} # this value will be reset every frame, used to stop constant increase of velocity
 
-        frame_movement = (movement[0] + self.velocity[0], movement[1] + self.velocity[1])
+        frame_movement = ((movement[0] + self.velocity[0]) * self.game.game_speed, (movement[1] + self.velocity[1]) * self.game.game_speed) # movement based on velocity
 
         self.pos[0] += frame_movement[0]
         entity_rect = self.rect() # getting the entities rectange
