@@ -34,15 +34,13 @@ class Game:
             'obstacles': load_images('tiles/obstacles'),
             'player': load_image('entities/player.png'),
             'player/idle': Animation(load_images('entities/player/idle'), img_dur=6),
-            'particle/leaf': Animation(load_images('particles/leaf'), img_dur=20, loop=False),
-            'particle/particle': Animation(load_images('particles/particle'), img_dur=6, loop=False),
             'gun': load_image('gun.png'),
             'projectile': load_image('projectile.png'),
         }
 
 
         # initalizing player
-        self.player = Player(self, (1920/2, 1080/2), (8, 15))
+        self.player = Player(self, (1920/2, 1080/2), (42, 42))
 
         # initalizing tilemap
         self.tilemap = Tilemap(self, tile_size=64)
