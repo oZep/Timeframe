@@ -25,7 +25,7 @@ class Menu():
         self.D = Image(self.game.assets['D'].copy(), [555,360], 10, .5)
         self.D.scale(4)
 
-        self.Move = Text('Movment', [450, 450])
+        self.Move = Text('Movement', [450, 450])
 
         self.ESC = Image(self.game.assets['ESC'].copy(), [1300,330], 10, .3)
         self.ESC.scale(4)

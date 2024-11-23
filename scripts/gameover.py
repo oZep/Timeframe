@@ -9,7 +9,7 @@ class GameOver():
 
         self.text = Text('Game Over', [860, 100])
         self.text2 = Text('Score: '+str(score),  [860, 335])
-        self.text4 = Text('You Suck :( !', [860, 540])
+        self.text4 = Text('You Suck :(', [860, 540])
         self.text3 = Text('Press Enter to Return to Menu.', [700, 720])
 
 

@@ -274,6 +274,7 @@ class Game:
                         new_bullet = Bullet(self, self.player.rect().center, 10, bullet_angle, (18, 18))
                         self.bullets.append(new_bullet)
                         self.game_timer -= 1000
+                        self.game.screenshake = 10
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         self.main_menu()

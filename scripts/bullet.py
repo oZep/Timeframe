@@ -12,8 +12,6 @@ class Bullet():
         self.angle = angle
         self.size = size
         self.type = type
-
-        self.game.screenshake = 7
     
     def render(self, surf, offset=(0, 0)):
         surf.blit(self.game.assets[self.type + 'bullet'], (self.pos[0] - offset[0], self.pos[1] - offset[1]))
@@ -43,5 +41,5 @@ class Bullet():
     def spark(self, angle):
         angle_range = math.pi/3
         for i in range(10):
-            new_spark = Spark(self.pos, (angle - angle_range/2 + (random.random() * angle_range)), random.random() * 5 + 3)
+            new_spark = Spark(self.pos, (angle - angle_range/2 + (random.random() * angle_range)), random.random() * 8 + 1)
             self.game.sparks.append(new_spark)
