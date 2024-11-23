@@ -7,6 +7,7 @@ import pygame, os
 from scripts.utils import load_image, load_images, Animation
 from scripts.entities import Player, Enemy
 from scripts.tilemap import Tilemap
+from scripts.UI import Text
 
 
 class Game:
@@ -105,6 +106,10 @@ class Game:
 
         slowdown_timer_change = 3
 
+        self.has_moved = False
+
+        level_bar = Text("Time Left: " + str(self.game_timer), pos=(self.display.get_width() // 2 -30, 13))
+
         # creating an infinite game loop
         while True:
             self.display.fill((255, 255, 255))
@@ -112,13 +117,16 @@ class Game:
 
             self.screenshake = max(0, self.screenshake-1) # resets screenshake value
 
-            self.game_timer -= self.deltatime * (1 + self.slowdown * (slowdown_timer_change -1))
+            #Count game timer down if has moved
+            if self.has_moved:
+                self.game_timer -= self.deltatime * (1 + self.slowdown * (slowdown_timer_change -1))
 
             if self.dead: # get hit once
                 self.dead += 1
             
-            #Count down, if time elapse spawn enemy
-            self.enemy_timer -= self.deltatime * (1 - (self.slowdown * (slowdown_timer_change-1)/slowdown_timer_change))
+            #Count down if has moved, if time elapsed spawn enemy
+            if self.has_moved:
+                self.enemy_timer -= self.deltatime * (1 - (self.slowdown * (slowdown_timer_change-1)/slowdown_timer_change))
             if self.enemy_timer < 0:
                 enemy_pos = [100, 100]
                 if random.randint(0, 1) == 0:
@@ -163,6 +171,11 @@ class Game:
                 self.player.update(self.tilemap, (self.movement[1] - self.movement[0], self.movement[3] - self.movement[2]))
                 self.player.render(self.display, offset=render_scroll)
 
+            #Show time left
+            timer_mins = (math.floor(self.game_timer/100000))
+            timer_seconds = (math.floor(self.game_timer/1000) - (timer_mins * 100))
+            level_bar.render(self.display, 50, color=(0, 0, 0), text=timer_seconds)
+
             # player cursor display bulleye
             mpos = pygame.mouse.get_pos() # gets mouse positon
             mpos = (mpos[0] / (self.screen_size[0]/self.display.get_width()), mpos[1] / (self.screen_size[1]/self.display.get_height())) # since screen sometimes scales
@@ -184,6 +197,7 @@ class Game:
                         self.movement[2] = True
                     elif event.key == pygame.K_s:
                         self.movement[3] = True
+                    self.has_moved = True
                 if event.type == pygame.KEYUP: # when key is released
                     if event.key == pygame.K_a: 
                         self.movement[0] = False

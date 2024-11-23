@@ -39,11 +39,13 @@ class Text:
         self.pos = pos
     
 
-    def render(self, surf, fontsize, color=(255,255, 0)):
+    def render(self, surf, fontsize, color=(255,255, 0), text=None):
         '''
         renders img on screen
         (surface, font size)
         '''
+        if not text == None:
+            self.level = text
         self.fontsize = fontsize
-        current_level = pygame.font.SysFont('Superstar', fontsize).render(f"{self.level}", False, color)
+        current_level = pygame.font.SysFont('Sans Serif', fontsize).render(f"{self.level}", False, color)
         surf.blit(current_level, self.pos)
