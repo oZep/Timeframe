@@ -15,6 +15,10 @@ class Menu():
         self.D = Image(self.game.assets['D'].copy(), [555,360], 10)
         self.D.scale(4)
 
+        self.ESC = Image(self.game.assets['ESC'].copy(), [1400,360], 10)
+
+        self.click = Image(self.game.assets['click'].copy(), [1000, 330], 10)
+
 
 
     def update(self):
@@ -23,6 +27,8 @@ class Menu():
         self.A.update()
         self.S.update()
         self.D.update()
+        self.ESC.update()
+        self.click.update()
 
     def render(self):
         ''' render the menu'''
@@ -30,4 +36,6 @@ class Menu():
         self.A.render(self.game.display)
         self.S.render(self.game.display)
         self.D.render(self.game.display)
+        self.ESC.render(self.game.display)
+        self.click.render(self.game.display)
 
