@@ -53,5 +53,5 @@ class Text:
         if not text == None:
             self.level = text
         self.fontsize = fontsize
-        current_level = pygame.font.SysFont('Sans Serif', fontsize).render(f"{self.level}", False, color)
+        current_level = pygame.font.SysFont('ignore warning this resets to default', fontsize).render(f"{self.level}", False, color)
         surf.blit(current_level, self.pos)

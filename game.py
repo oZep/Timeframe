@@ -182,12 +182,31 @@ class Game:
             if not self.dead:
                 # update player movement
                 self.player.update(self.tilemap, (self.movement[1] - self.movement[0], self.movement[3] - self.movement[2]))
+                if self.player.pos[0] > self.display.get_width() - 42:
+                    self.player.pos[0] = self.display.get_width() - 42
+                if self.player.pos[1] > self.display.get_height() - 42:
+                    self.player.pos[1] = self.display.get_height() - 42
+                if self.player.pos[0] < 0:
+                    self.player.pos[0] = 0 
+                if self.player.pos[1] < 0:
+                    self.player.pos[1] = 0 
                 self.player.render(self.display, offset=render_scroll)
 
             #Show time left
-            timer_mins = (math.floor(self.game_timer/100000))
-            timer_seconds = (math.floor(self.game_timer/1000) - (timer_mins * 100))
-            level_bar.render(self.display, 50, color=(0, 0, 0), text=timer_seconds)
+            min = math.floor((self.game_timer/1000/60))
+            sec = math.floor((self.game_timer/1000) % 60)
+            ms = self.game_timer - math.floor(self.game_timer/1000) * 1000
+            if sec == 0:
+                sec = '00'
+            elif sec < 10:
+                sec = '0' + str(sec)
+            if min:
+                formatted_timer = str(min) + ':' + str(sec)
+            else:
+                formatted_timer = str(sec)
+                if int(sec) <= 10:
+                    formatted_timer = formatted_timer + '.' + str(ms)
+            level_bar.render(self.display, 50, color=(0, 0, 0), text=formatted_timer)
 
             # player cursor display bulleye
             mpos = pygame.mouse.get_pos() # gets mouse positon
@@ -221,7 +240,7 @@ class Game:
                     elif event.key == pygame.K_s:
                         self.movement[3] = False
                 
-                if not self.movement[0] and not self.movement[1] and not self.movement[2] and not self.movement[3]:
+                if self.movement[1] - self.movement[0] == 0 and self.movement[3] - self.movement[2] == 0:
                     self.slowdown = True
                 else:
                     self.slowdown = False

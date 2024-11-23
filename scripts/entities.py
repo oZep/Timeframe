@@ -44,10 +44,8 @@ class PhysicsEntity:
         '''
         updates frames and entitiy position 
         '''
-        #Normalize movement vector
-        movement_magnitude = math.sqrt((movement[0] * movement[0] + movement[1] * movement[1]))
-        if movement_magnitude > 0:
-            movement = (movement[0] / movement_magnitude, movement[1] / movement_magnitude)
+        #Normalizing movement vector is in player and enemy
+        
 
         self.collisions = {'up': False, 'down': False, 'left': False, 'right': False} # this value will be reset every frame, used to stop constant increase of velocity
 
@@ -120,7 +118,12 @@ class Player(PhysicsEntity):
         '''
         updates players animations depending on movement
         '''
-        super().update(tilemap, movement=movement)
+        player_movement = movement
+        movement_magnitude = math.sqrt((movement[0] * movement[0] + movement[1] * movement[1]))
+        if movement_magnitude > 0:
+            player_movement = (movement[0] / movement_magnitude, movement[1] / movement_magnitude)
+        
+        super().update(tilemap, movement=player_movement)
 
 
     def render(self, surf, offset={0,0}):
@@ -146,7 +149,13 @@ class Enemy(PhysicsEntity):
         self.set_action('idle')
     
     def update(self, tilemap, movement=(0,0)):
-        super().update(tilemap, movement=movement)
+        enemy_movement = movement
+        movement_magnitude = math.sqrt((movement[0] * movement[0] + movement[1] * movement[1]))
+        if movement_magnitude > 0:
+            enemy_movement = (movement[0] / movement_magnitude, movement[1] / movement_magnitude)
+        enemy_movement = [enemy_movement[0] * 0.75, enemy_movement[1] * 0.75]
+
+        super().update(tilemap, movement=enemy_movement)
             
 
     def render(self, surf, offset=(0, 0)):
