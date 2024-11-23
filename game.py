@@ -35,7 +35,8 @@ class Game:
             'obstacles': load_images('tiles/obstacles'),
             'player': load_image('entities/player.png'),
             'player/idle': Animation(load_images('entities/player/idle'), img_dur=6),
-            'target': load_image('entities/target_round_a.png')
+            'target': load_image('entities/target_round_a.png'),
+            'playerbullet/idle': load_image('entities/PlayerBullet.png'),
         }
 
 
@@ -135,6 +136,9 @@ class Game:
                         self.movement[3] = False
                     if event.key == pygame.K_x:
                         self.slowdown = False
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.screenshake = 10
+                    self.player.shoot(pygame.mouse.get_pos())
 
             screenshake_offset = (random.random() * self.screenshake - self.screenshake / 2, random.random() * self.screenshake - self.screenshake / 2)
             self.screen.blit(pygame.transform.scale(self.display, self.screen_size), screenshake_offset)

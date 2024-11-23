@@ -23,6 +23,8 @@ class PhysicsEntity:
 
         self.last_movement = [0, 0]
 
+        self.bullets = []
+
     def rect(self):
         '''
         creates a rectangle at the entitiies current postion
@@ -92,7 +94,12 @@ class PhysicsEntity:
         '''
         surf.blit(pygame.transform.flip(self.animation.img(), False, False), (self.pos[0] - offset[0] + self.anim_offset[0], self.pos[1] - offset[1] + self.anim_offset[1])) # fliping agasint horizontal axis
 
-
+    def shoot(self, target, bullet_type):
+        '''
+        shoots a bullet
+        '''
+        bullet = Bullet(self.game, self.pos, (8, 8), target, bullet_type)
+        self.bullets.append(bullet)
 
 class Player(PhysicsEntity):
     def __init__(self, game, pos, size):
@@ -120,16 +127,12 @@ class Player(PhysicsEntity):
         if abs(self.dashing) <= 50: # not in first 10 frames of dash
             super().render(surf, offset=offset) # show player
 
-    def jump(self):
+    def shoot(self, target):
         '''
-        makes player jump
-        -> bool if jump occurs
+        shoots a bullet
         '''
-    
-    def dash(self):
-        '''
-        makes the player dash
-        '''
+        bullet = Bullet(self.game, self.pos, (8, 8), target, bullet_type='player')
+        self.bullets.append(bullet)
             
 
 class Enemy(PhysicsEntity):
@@ -161,5 +164,34 @@ class Enemy(PhysicsEntity):
 
         
 
+class Bullet(PhysicsEntity):
+    def __init__(self, game, pos, size, target, bullet_type):
+        '''
+        instantiates the bullets
+        (game, position: tuple, size, target)
+        '''
+        super().__init__(game, bullet_type+'bullet', pos, size)
+        self.target = target
+        self.speed = 10
+        self.type = bullet_type
 
-        
+    def update(self, tilemap, movement=(0,0)):
+        '''
+        updates the bullets position
+        '''
+        super().update(tilemap, movement=movement)
+
+        # move towards target in top down
+        angle = math.atan2(self.target[1] - self.pos[1], self.target[0] - self.pos[0])
+        self.velocity = [math.cos(angle) * self.speed, math.sin(angle) * self.speed]
+
+    def render(self, surf, offset=(0, 0)):
+        '''
+        renders the bullet
+        '''
+        if self.bullet_type == 'playerbullet':
+            surf.blit(self.game.assets['playerbullet'], (self.pos[0] - offset[0], self.pos[1] - offset[1]))
+        #else:
+        #    surf.blit(self.game.assets['bullet'], (self.pos[0] - offset[0], self.pos[1] - offset[1]))
+
+       
