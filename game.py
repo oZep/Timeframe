@@ -21,7 +21,7 @@ class Game:
         # create window
         self.screen = pygame.display.set_mode((1920,1080), pygame.FULLSCREEN)
 
-        self.display = pygame.Surface((1920,1080)) # render on different resolution then scale it up to screen
+        self.display = pygame.Surface((1280,720)) # render on different resolution then scale it up to screen
 
         self.clock = pygame.time.Clock()
         
