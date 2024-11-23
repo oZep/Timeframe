@@ -121,7 +121,7 @@ class Game:
 
         self.game_timer = 30000
 
-        self.slowdown_timer_change = 10
+        self.slowdown_timer_change = 5
 
         self.has_moved = False
 
@@ -156,8 +156,8 @@ class Game:
                 self.enemies.append(new_enemy)
                 #next wait (milliseconds)
                 self.enemy_timer_reset -= 100
-                if self.enemy_timer_reset < 100:
-                    self.enemy_timer_reset = 100
+                if self.enemy_timer_reset < 700:
+                    self.enemy_timer_reset = 700
                 self.enemy_timer = self.enemy_timer_reset
 
             render_scroll = (0, 0)

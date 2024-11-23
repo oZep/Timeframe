@@ -26,7 +26,8 @@ class Bullet():
                     rect = enemy.rect()
                     if rect.collidepoint(self.pos):
                         self.game.enemies.remove(enemy)
-                        self.game.game_timer += 5000
+                        if not self.game.dead:
+                            self.game.game_timer += 5000
                         return True
             elif self.type == 'enemy':
                 rect = self.game.player.rect()
