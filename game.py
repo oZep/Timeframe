@@ -66,8 +66,6 @@ class Game:
         # screen shake
         self.screenshake = 0
 
-        self.bullets = []
-
         self.dead = 0
 
         self.scroll = [0, 0]
@@ -145,6 +143,7 @@ class Game:
 
         self.enemies = []
         self.bullets = []
+        self.sparks = []
 
         self.deltatime = 0
 
@@ -235,6 +234,10 @@ class Game:
                 if self.player.pos[1] < 0:
                     self.player.pos[1] = 0 
                 self.player.render(self.display, offset=render_scroll)
+
+            for spark in self.sparks:
+                spark.update()
+                spark.render(self.display, offset=render_scroll)
 
             #Show time left
             min = math.floor((self.game_timer/1000/60))
