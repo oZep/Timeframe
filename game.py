@@ -103,6 +103,8 @@ class Game:
 
         self.game_timer = 60000
 
+        slowdown_timer_change = 3
+
         # creating an infinite game loop
         while True:
             self.display.fill((255, 255, 255))
@@ -110,21 +112,21 @@ class Game:
 
             self.screenshake = max(0, self.screenshake-1) # resets screenshake value
 
-            self.game_timer -= self.deltatime * (1 + self.slowdown * 2)
+            self.game_timer -= self.deltatime * (1 + self.slowdown * (slowdown_timer_change -1))
 
             if self.dead: # get hit once
                 self.dead += 1
             
             #Count down, if time elapse spawn enemy
-            self.enemy_timer -= self.deltatime
+            self.enemy_timer -= self.deltatime * (1 - (self.slowdown * (slowdown_timer_change-1)/slowdown_timer_change))
             if self.enemy_timer < 0:
                 enemy_pos = [100, 100]
                 if random.randint(0, 1) == 0:
-                    enemy_pos[0] = 0 + (self.display.get_width() * random.randint(0, 1))
-                    enemy_pos[1] = random.randint(0, self.display.get_height())
+                    enemy_pos[0] = 0 + ((self.display.get_width() + 42) * random.randint(0, 1)) - 42
+                    enemy_pos[1] = random.randint(0, self.display.get_height() + 42) - 42
                 else:
-                    enemy_pos[1] = 0 + (self.display.get_height() * random.randint(0, 1))
-                    enemy_pos[0] = random.randint(0, self.display.get_width())
+                    enemy_pos[1] = 0 + ((self.display.get_height() + 42) * random.randint(0, 1)) - 42
+                    enemy_pos[0] = random.randint(0, self.display.get_width() + 42) - 42
                 new_enemy = Enemy(self, enemy_pos, (42, 42))
                 self.enemies.append(new_enemy)
                 #next wait (milliseconds)
