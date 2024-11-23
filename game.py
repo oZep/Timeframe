@@ -6,6 +6,7 @@ import pygame, os
 
 from scripts.utils import load_image, load_images, Animation
 from scripts.entities import Player, Enemy
+from scripts.bullet import Bullet
 from scripts.tilemap import Tilemap
 from scripts.UI import Text
 from scripts.menu import Menu
@@ -39,7 +40,7 @@ class Game:
             'player/idle': Animation(load_images('entities/player/idle'), img_dur=6),
             'enemy/idle': Animation(load_images('entities/enemy/idle'), img_dur=6),
             'target': load_image('entities/target_round_a.png'),
-            'playerbullet/idle': load_image('entities/PlayerBullet.png'),
+            'playerbullet': load_image('entities/PlayerBullet.png'),
             'W': load_image('UI/W.png'),
             'A': load_image('UI/A.png'),
             'S': load_image('UI/S.png'),
@@ -112,6 +113,7 @@ class Game:
         self.enemy_timer = 2000
 
         self.enemies = []
+        self.bullets = []
 
         self.deltatime = 0
 
@@ -153,20 +155,25 @@ class Game:
                 #next wait (milliseconds)
                 self.enemy_timer = 2000
 
-            # move 'camera' to focus on player, make him the center of the screen
-            # scroll = current scroll + (where we want the camera to be - what we have/can see currently) 
-            self.scroll[0] += (self.player.rect().centerx - self.display.get_width()/2 - self.scroll[0])  / 30  # x axis
-            self.scroll[1] += (self.player.rect().centery - self.display.get_height()/2 - self.scroll[1]) / 30
-
-            # fix the jitter
-            #render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
             render_scroll = (0, 0)
 
             self.ground.render(self.display, offset=render_scroll)
             self.tilemap.render(self.display, offset=render_scroll)
 
-            for bullet in self.bullets:
-                bullet.render(self.display, offset=render_scroll)
+            for bullet in self.bullets.copy():
+                collided = bullet.update(self.tilemap)
+                if collided:
+                    self.bullets.remove(bullet)
+                else:
+                    if bullet.pos[0] > self.display.get_width():
+                        self.bullets.remove(bullet)
+                    if self.player.pos[1] > self.display.get_height():
+                        self.bullets.remove(bullet)
+                    if self.player.pos[0] < 0 - bullet.size[0]:
+                        self.bullets.remove(bullet)
+                    if self.player.pos[1] < 0 - bullet.size[1]:
+                        self.player.pos[1] = 0 
+                    bullet.render(self.display, offset=render_scroll)
 
             # handle changes in game speed
             if self.slowdown:
@@ -218,6 +225,13 @@ class Game:
                 if event.type == pygame.QUIT: # have to code the window closing
                     pygame.quit()
                     sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        dx = mpos[0] - self.player.rect().centerx
+                        dy = mpos[1] - self.player.rect().centery
+                        bullet_angle = math.atan2(dx, -dy) - (math.pi/2)
+                        new_bullet = Bullet(self, self.player.rect().center, 10, bullet_angle, (18, 18))
+                        self.bullets.append(new_bullet)
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         self.main_menu()
@@ -240,13 +254,10 @@ class Game:
                     elif event.key == pygame.K_s:
                         self.movement[3] = False
                 
-                if self.movement[1] - self.movement[0] == 0 and self.movement[3] - self.movement[2] == 0:
-                    self.slowdown = True
-                else:
-                    self.slowdown = False
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    self.screenshake = 10
-                    self.player.shoot(pygame.mouse.get_pos())
+            if self.movement[1] - self.movement[0] == 0 and self.movement[3] - self.movement[2] == 0:
+                self.slowdown = True
+            else:
+                self.slowdown = False
 
             screenshake_offset = (random.random() * self.screenshake - self.screenshake / 2, random.random() * self.screenshake - self.screenshake / 2)
             self.screen.blit(pygame.transform.scale(self.display, self.screen_size), screenshake_offset)
