@@ -129,23 +129,14 @@ class Enemy(PhysicsEntity):
         (game, position: tuple, size)
         '''
         super().__init__(game, 'enemy', pos, size)
-        self.walking = 0
+        self.set_action('idle')
     
     def update(self, tilemap, movement=(0,0)):
         super().update(tilemap, movement=movement)
-
-        if movement[0] != 0:
-            self.set_action('run')
-        else:
-            self.set_action('idle')
+            
 
     def render(self, surf, offset=(0, 0)):
         super().render(surf, offset=offset)
-
-        if self.flip:
-            surf.blit(pygame.transform.flip(self.game.assets['gun'], True, False), (self.rect().centerx - 4 - self.game.assets['gun'].get_width() - offset[0], self.rect().centery - offset[1])) # renders the gun in the player
-        else:
-            surf.blit(self.game.assets['gun'], (self.rect().centerx + 4 - offset[0], self.rect().centery - offset[1]))
 
     
 

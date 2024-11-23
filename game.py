@@ -5,7 +5,7 @@ import random
 import pygame, os
 
 from scripts.utils import load_image, load_images, Animation
-from scripts.entities import Player
+from scripts.entities import Player, Enemy
 from scripts.tilemap import Tilemap
 
 
@@ -35,7 +35,8 @@ class Game:
             'obstacles': load_images('tiles/obstacles'),
             'player': load_image('entities/player.png'),
             'player/idle': Animation(load_images('entities/player/idle'), img_dur=6),
-            'cursor': load_image('entities/cursor.png')
+            'cursor': load_image('entities/cursor.png'),
+            'enemy/idle': Animation(load_images('entities/enemy/idle'), img_dur=6),
         }
 
 
@@ -62,6 +63,22 @@ class Game:
         '''
         runs the Game
         '''
+        self.screenshake = 0
+
+        self.dead = 0
+
+        self.player.pos = [self.display.get_width()/2, self.display.get_height()/2]
+
+        self.movement = [False, False, False, False]  # left, right, up, down
+        self.slowdown = 0 # slow down the game
+        self.game_speed = 1
+
+        #Enemy spawn wait (milliseconds)
+        self.enemy_timer = 2000
+
+        self.enemies = []
+
+        self.deltatime = 0
 
         # creating an infinite game loop
         while True:
@@ -72,6 +89,15 @@ class Game:
 
             if self.dead: # get hit once
                 self.dead += 1
+            
+            #Count down, if time elapse spawn enemy
+            self.enemy_timer -= self.deltatime
+            if self.enemy_timer < 0:
+                enemy_pos = (100, 100)
+                new_enemy = Enemy(self, enemy_pos, (42, 42))
+                self.enemies.append(new_enemy)
+                #next wait (milliseconds)
+                self.enemy_timer = 2000
 
             # move 'camera' to focus on player, make him the center of the screen
             # scroll = current scroll + (where we want the camera to be - what we have/can see currently) 
@@ -90,6 +116,11 @@ class Game:
                 self.game_speed = 0.5
             else:
                 self.game_speed = 1
+            
+            #update enemies
+            for enemy in self.enemies:
+                enemy.update(self.tilemap, (self.player.pos[0] - enemy.pos[0], self.player.pos[1] - enemy.pos[1]))
+                enemy.render(self.display)
 
             if not self.dead:
                 # update player movement
@@ -107,6 +138,8 @@ class Game:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        self.main_menu()
                     if event.key == pygame.K_a: # referencing right and left arrow keys
                         self.movement[0] = True
                         self.slowdown = False
@@ -119,9 +152,6 @@ class Game:
                     elif event.key == pygame.K_s:
                         self.movement[3] = True
                         self.slowdown = False
-                    elif event.key == pygame.K_ESCAPE:
-                        pygame.quit()
-                        sys.exit()
                     else:
                         self.slowdown = True
                 if event.type == pygame.KEYUP: # when key is released
@@ -139,7 +169,7 @@ class Game:
             screenshake_offset = (random.random() * self.screenshake - self.screenshake / 2, random.random() * self.screenshake - self.screenshake / 2)
             self.screen.blit(pygame.transform.scale(self.display, self.screen_size), screenshake_offset)
             pygame.display.update()
-            self.clock.tick(60) # run at 60 fps, like a sleep
+            self.deltatime = self.clock.tick(60) # run at 60 fps, like a sleep
 
 # returns the game then runs it
-Game().run()
+Game().main_menu()
