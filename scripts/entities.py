@@ -18,7 +18,6 @@ class PhysicsEntity:
 
         self.action = ''
         self.anim_offset = (-3, -3) #renders with an offset to pad the animation against the hitbox
-        self.flip = False
         self.set_action('idle')
 
         self.last_movement = [0, 0]
@@ -76,11 +75,6 @@ class PhysicsEntity:
                     self.collisions['up'] = True
                 self.pos[1] = entity_rect.y
 
-        # find when to flip img for animation
-        if movement[0] > 0:
-            self.flip = False
-        if movement[0] < 0:
-            self.flip = True
 
         self.last_movement = movement # keeps track of movement
 
@@ -95,7 +89,7 @@ class PhysicsEntity:
         '''
         renders entitiy asset
         '''
-        surf.blit(pygame.transform.flip(self.animation.img(), self.flip, False), (self.pos[0] - offset[0] + self.anim_offset[0], self.pos[1] - offset[1] + self.anim_offset[1])) # fliping agasint horizontal axis
+        surf.blit(pygame.transform.flip(self.animation.img(), False, False), (self.pos[0] - offset[0] + self.anim_offset[0], self.pos[1] - offset[1] + self.anim_offset[1])) # fliping agasint horizontal axis
 
 
 
