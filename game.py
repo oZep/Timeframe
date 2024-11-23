@@ -35,6 +35,7 @@ class Game:
             'obstacles': load_images('tiles/obstacles'),
             'player': load_image('entities/player.png'),
             'player/idle': Animation(load_images('entities/player/idle'), img_dur=6),
+            'enemy/idle': Animation(load_images('entities/enemy/idle'), img_dur=6),
             'target': load_image('entities/target_round_a.png'),
             'playerbullet/idle': load_image('entities/PlayerBullet.png'),
         }
