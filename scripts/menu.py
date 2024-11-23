@@ -7,7 +7,7 @@ class Menu():
 
 
 
-        self.title = Text('Controls', [860, 100])
+        self.title = Text('Timeframe', [860, 100])
 
         self.explain3 = Text('Killing enemies gives you more time, but shooting takes time away.', [370, 540])
         self.explain = Text('When you stop moving, everthing slows down, but the timer counts down faster.', [260, 600])
