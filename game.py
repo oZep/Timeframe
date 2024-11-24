@@ -153,6 +153,8 @@ class Game:
         '''
         self.screenshake = 0
 
+        self.playmus = True
+
         self.dead = 0
 
         self.player.pos = [self.display.get_width()/2, self.display.get_height()/2]
