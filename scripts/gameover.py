@@ -1,3 +1,5 @@
+import pygame
+
 from scripts.UI import Image, Text
 
 class GameOver():
@@ -7,10 +9,12 @@ class GameOver():
         self.game = game
         self.score = score
 
+        self.death_panel = pygame.Surface((1920, 1080), pygame.SRCALPHA)
+
         self.text = Text('Game Over', [860, 100])
         self.text2 = Text('Score: '+str(score),  [860, 335])
         self.text4 = Text('You Suck :(', [860, 540])
-        self.text3 = Text('Press Enter to Return to Menu.', [700, 720])
+        self.text3 = Text('Press Enter to play again, Escape to return to main menu', [470, 720])
 
 
 
@@ -19,12 +23,16 @@ class GameOver():
 
     def render(self):
         ''' render the menu'''
-        self.text.render(self.game.display, 50, (0,0,0))
-        self.text2.render(self.game.display, 50, (0,0,0))
-        self.text3.render(self.game.display, 50, (0,0,0))
+        self.death_panel.fill((255,255,255, 100))
+
+        self.text.render(self.death_panel, 50, (0,0,0))
+        self.text2.render(self.death_panel, 50, (0,0,0))
+        self.text3.render(self.death_panel, 50, (0,0,0))
 
         if self.score[0] == "-":
-            self.text4.render(self.game.display, 50, (0,0,0))
+            self.text4.render(self.death_panel, 50, (0,0,0))
+        
+        self.game.display.blit(self.death_panel)
 
 
 

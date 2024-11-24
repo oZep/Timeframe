@@ -58,11 +58,28 @@ class Game:
             'select': pygame.mixer.Sound('data/sfx/select.wav'),
             'shoot': pygame.mixer.Sound('data/sfx/shoot.wav'),
         }
+        self.ost = {
+            'introstart': pygame.mixer.Sound('data/Music/FixedMusic/IntroMusic_Start.wav'),
+            'introloop': pygame.mixer.Sound('data/Music/FixedMusic/IntroMusic_Loop.wav'),
+            'introtrans': pygame.mixer.Sound('data/Music/FixedMusic/IntroMusic_Transition.wav'),
+            'battleloop': pygame.mixer.Sound('data/Music/FixedMusic/BattleMusic_Loop.wav'),
+            'battletrans': pygame.mixer.Sound('data/Music/FixedMusic/BattleMusic_Transition.wav'),
+            'deathloop': pygame.mixer.Sound('data/Music/FixedMusic/SlowMusicStyle_Loop.wav'),
+            'deathtrans': pygame.mixer.Sound('data/Music/FixedMusic/SlowMusicStyle_Transition.wav'),
+        }
 
         self.sfx['shoot'].set_volume(0.8)
         self.sfx['select'].set_volume(0.5)
         self.sfx['player_death'].set_volume(1.0)
         self.sfx['enemy_death'].set_volume(0.8)
+
+        self.ost['introstart'].set_volume(0.4)
+        self.ost['introloop'].set_volume(0.4)
+        self.ost['introtrans'].set_volume(0.4)
+        self.ost['battleloop'].set_volume(0.4)
+        self.ost['battletrans'].set_volume(0.4)
+        self.ost['deathloop'].set_volume(0.4)
+        self.ost['deathtrans'].set_volume(0.4)
 
 
         # initalizing player
@@ -112,29 +129,10 @@ class Game:
             self.deltatime = self.clock.tick(60) # run at 60 fps, like a sleep
 
     def game_over(self, score):
-        while True:
-            self.display.fill((255, 255, 255))
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        pygame.quit()
-                        sys.exit()
-                    if event.key == pygame.K_RETURN:
-                        self.sfx['select'].play(0)
-                        self.main_menu()
-
-            # rnder the game over screen
-            game_over = GameOver(self, score)
-            game_over.update()
-            game_over.render()
-
-            self.screen.blit(pygame.transform.scale(self.display, self.screen_size), [0,0])
-            pygame.display.update()
-            self.deltatime = self.clock.tick(60) # run at 60 fps, like a sleep
+        # render the game over screen
+        game_over = GameOver(self, score)
+        game_over.update()
+        game_over.render()
 
 
 
@@ -181,11 +179,6 @@ class Game:
             if self.has_moved and not self.dead:
                 self.game_timer -= self.deltatime * (1 + self.slowdown * (self.slowdown_timer_change -1))
 
-            if self.dead: # get hit once
-                self.dead += 1
-                if self.dead > 40:
-                    self.game_over(self.formated_timer)
-                    break
             
             #Count down if has moved, if time elapsed spawn enemy
             if self.has_moved:
@@ -271,6 +264,11 @@ class Game:
             self.formated_timer = formatted_timer 
             level_bar.render(self.display, 50, color=(0, 0, 0), text=formatted_timer)
 
+            if self.dead: # get hit once
+                self.dead += 1
+            if self.dead > 80:
+                self.game_over(self.formated_timer)
+
             # player cursor display bulleye
             mpos = pygame.mouse.get_pos() # gets mouse positon
             mpos = (mpos[0] / (self.screen_size[0]/self.display.get_width()), mpos[1] / (self.screen_size[1]/self.display.get_height())) # since screen sometimes scales
@@ -294,6 +292,8 @@ class Game:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         self.main_menu()
+                    if self.dead and event.key == pygame.K_RETURN:
+                        self.run()
                     if event.key == pygame.K_a: # referencing right and left arrow keys
                         self.movement[0] = True
                     elif event.key == pygame.K_d: 
