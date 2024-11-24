@@ -21,7 +21,7 @@ class Game:
         pygame.init()
 
         # change the window caption
-        pygame.display.set_caption("Time Dilemma")
+        pygame.display.set_caption("Timeframe")
 
         # create window
         self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
