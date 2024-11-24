@@ -100,9 +100,13 @@ class Game:
 
         self.scroll = [0, 0]
 
+        self.playmus = True
+
         pygame.mouse.set_visible(False)
 
     def main_menu(self):
+        self.ost['battleloop'].stop()
+        self.ost['deathloop'].stop()
         self.ost['introstart'].play(-1)
         while True:
             self.display.fill((255, 255, 255))
@@ -117,6 +121,7 @@ class Game:
                         sys.exit()
                     if event.key == pygame.K_RETURN:
                         self.sfx['select'].play(0)
+                        self.ost['introstart'].stop()
                         self.run()
 
             # render the main menu
@@ -131,7 +136,11 @@ class Game:
 
     def game_over(self, score):
         # render the game over screen
-        self.ost['battleloop'].play(0)
+        if self.playmus:
+            self.ost['battleloop'].stop()
+            self.ost['deathloop'].play(-1)
+            self.playmus = False
+        
         game_over = GameOver(self, score)
         game_over.update()
         game_over.render()
@@ -169,6 +178,10 @@ class Game:
         self.has_moved = False
 
         level_bar = Text("Time Left: " + str(self.game_timer), pos=(self.display.get_width() // 2 -30, 13))
+        self.ost['deathloop'].stop()
+        self.ost['battleloop'].play(-1)
+        
+
 
         # creating an infinite game loop
         while True:
