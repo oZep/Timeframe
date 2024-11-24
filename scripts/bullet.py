@@ -20,6 +20,7 @@ class Bullet():
         self.pos[0] += math.cos(self.angle) * self.velocity * self.game.game_speed
         self.pos[1] += math.sin(self.angle) * self.velocity * self.game.game_speed
         if tilemap.solid_check(self.pos):
+            self.spark(self.angle - math.pi)
             return True
         else:
             if self.type == 'player':

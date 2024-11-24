@@ -71,17 +71,14 @@ class Game:
         }
 
         self.sfx['shoot'].set_volume(0.8)
-        self.sfx['select'].set_volume(0.5)
-        self.sfx['player_death'].set_volume(1.0)
+        self.sfx['select'].set_volume(0.3)
+        self.sfx['player_death'].set_volume(0.7)
         self.sfx['enemy_death'].set_volume(0.8)
 
-        self.ost['introstart'].set_volume(0.4)
-        self.ost['introloop'].set_volume(0.4)
-        self.ost['introtrans'].set_volume(0.4)
-        self.ost['battleloop'].set_volume(0.4)
-        self.ost['battletrans'].set_volume(0.4)
-        self.ost['deathloop'].set_volume(0.4)
-        self.ost['deathtrans'].set_volume(0.4)
+        #self.ost['introstart'].set_volume(0.6)
+        self.ost['introloop'].set_volume(0.8)
+        self.ost['battleloop'].set_volume(0.6)
+        self.ost['deathloop'].set_volume(0.8)
 
 
         # initalizing player
@@ -89,9 +86,9 @@ class Game:
 
         # initalizing tilemap
         self.tilemap = Tilemap(self, tile_size=64)
-        self.tilemap.load('map.json')
+        self.tilemap.load('data/maps/map.json')
         self.ground = Tilemap(self, tile_size=64)
-        self.ground.load('ground.json')
+        self.ground.load('data/maps/ground.json')
 
         self.formated_timer = '0:00'
 
@@ -103,14 +100,20 @@ class Game:
         self.scroll = [0, 0]
 
         self.playmus = True
+        self.playmenumus = True
 
         pygame.mouse.set_visible(False)
     def main_menu(self):
         self.ost['battleloop'].stop()
         self.ost['deathloop'].stop()
-        self.ost['introstart'].play(-1)
+        if self.playmenumus:
+            self.ost['introloop'].play(-1)
+            self.playmenumus = False
+        self.menu_ground = Tilemap(self, tile_size=64)
+        self.menu_ground.load('data/maps/main_menu.json')
         while True:
             self.display.fill((255, 255, 255))
+            self.menu_ground.render(self.display, (0, 0))
 
             self.title = Text('Timeframe', [750, 200])
             self.title.render(self.display, 120, (0,0,0))
@@ -123,34 +126,12 @@ class Game:
             self.display.blit(pygame.transform.scale(self.assets['button'], (self.assets['button'].get_width() * 1.75, self.assets['button'].get_height() * 1.75)), (850, 635))
             controls_text = Text('Tutorial', (900, 659))
             controls_text.render(self.display, 50, color=(0, 0, 0))
-            controls_rect = pygame.Rect(850, 635, self.assets['button'].get_width(), self.assets['button'].get_height())
+            controls_rect = pygame.Rect(850, 635, self.assets['button'].get_width() * 1.75, self.assets['button'].get_height() * 1.75)
 
             self.display.blit(pygame.transform.scale(self.assets['button'], (self.assets['button'].get_width() * 1.75, self.assets['button'].get_height() * 1.75)), (850, 785))
             quit_text = Text('Quit', (920, 809))
             quit_text.render(self.display, 50, color=(0, 0, 0))
-            quit_rect = pygame.Rect(850, 785, self.assets['button'].get_width(), self.assets['button'].get_height())
-
-            mpos = pygame.mouse.get_pos() # gets mouse positon
-            mpos = (mpos[0] / (self.screen_size[0]/self.display.get_width()), mpos[1] / (self.screen_size[1]/self.display.get_height())) # since screen sometimes scales
-            self.display.blit(pygame.transform.scale(self.assets['target'], (32, 32)), (mpos[0], mpos[1]))
-
-            self.title = Text('Timeframe', [750, 200])
-            self.title.render(self.display, 120, (0,0,0))
-
-            self.display.blit(pygame.transform.scale(self.assets['button'], (self.assets['button'].get_width() * 1.75, self.assets['button'].get_height() * 1.75)), (850, 485))
-            start_text = Text('Start', (920, 509))
-            start_text.render(self.display, 50, color=(0, 0, 0))
-            start_rect = pygame.Rect(850, 485, self.assets['button'].get_width() * 1.75, self.assets['button'].get_height() * 1.75)
-
-            self.display.blit(pygame.transform.scale(self.assets['button'], (self.assets['button'].get_width() * 1.75, self.assets['button'].get_height() * 1.75)), (850, 635))
-            controls_text = Text('Tutorial', (900, 659))
-            controls_text.render(self.display, 50, color=(0, 0, 0))
-            controls_rect = pygame.Rect(850, 635, self.assets['button'].get_width(), self.assets['button'].get_height())
-
-            self.display.blit(pygame.transform.scale(self.assets['button'], (self.assets['button'].get_width() * 1.75, self.assets['button'].get_height() * 1.75)), (850, 785))
-            quit_text = Text('Quit', (920, 809))
-            quit_text.render(self.display, 50, color=(0, 0, 0))
-            quit_rect = pygame.Rect(850, 785, self.assets['button'].get_width(), self.assets['button'].get_height())
+            quit_rect = pygame.Rect(850, 785, self.assets['button'].get_width() * 1.75, self.assets['button'].get_height() * 1.75)
 
             mpos = pygame.mouse.get_pos() # gets mouse positon
             mpos = (mpos[0] / (self.screen_size[0]/self.display.get_width()), mpos[1] / (self.screen_size[1]/self.display.get_height())) # since screen sometimes scales
@@ -158,19 +139,6 @@ class Game:
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: # have to code the window closing
-                    pygame.quit()
-                    sys.exit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1:
-                        if start_rect.collidepoint(mpos):
-                            self.sfx['select'].play(0)
-                            self.run()
-                        if controls_rect.collidepoint(mpos):
-                            self.sfx['select'].play(0)
-                            self.controls()
-                        if quit_rect.collidepoint(mpos):
-                            pygame.quit()
-                            sys.exit()
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
@@ -205,39 +173,7 @@ class Game:
             self.display.blit(pygame.transform.scale(self.assets['button'], (self.assets['button'].get_width() * 1.75, self.assets['button'].get_height() * 1.75)), (850, 785))
             back_text = Text('Back', (920, 809))
             back_text.render(self.display, 50, color=(0, 0, 0))
-            back_rect = pygame.Rect(850, 785, self.assets['button'].get_width(), self.assets['button'].get_height())
-
-            mpos = pygame.mouse.get_pos() # gets mouse positon
-            mpos = (mpos[0] / (self.screen_size[0]/self.display.get_width()), mpos[1] / (self.screen_size[1]/self.display.get_height())) # since screen sometimes scales
-            self.display.blit(pygame.transform.scale(self.assets['target'], (32, 32)), (mpos[0], mpos[1]))
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT: # have to code the window closing
-                    pygame.quit()
-                    sys.exit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1:
-                        if back_rect.collidepoint(mpos):
-                            self.sfx['select'].play(0)
-                            self.main_menu()
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        self.sfx['select'].play(0)
-                        self.main_menu()
-            
-            self.screen.blit(pygame.transform.scale(self.display, self.screen_size), [0,0])
-            pygame.display.update()
-            self.deltatime = self.clock.tick(60) # run at 60 fps, like a sleep
-            
-
-    def controls(self):
-        while True:
-            self.display.fill((255, 255, 255))
-
-            self.display.blit(pygame.transform.scale(self.assets['button'], (self.assets['button'].get_width() * 1.75, self.assets['button'].get_height() * 1.75)), (850, 785))
-            back_text = Text('Back', (920, 809))
-            back_text.render(self.display, 50, color=(0, 0, 0))
-            back_rect = pygame.Rect(850, 785, self.assets['button'].get_width(), self.assets['button'].get_height())
+            back_rect = pygame.Rect(850, 785, self.assets['button'].get_width() * 1.75, self.assets['button'].get_height() * 1.75)
 
             mpos = pygame.mouse.get_pos() # gets mouse positon
             mpos = (mpos[0] / (self.screen_size[0]/self.display.get_width()), mpos[1] / (self.screen_size[1]/self.display.get_height())) # since screen sometimes scales
@@ -274,6 +210,7 @@ class Game:
         # render the game over screen
         if self.playmus:
             self.ost['battleloop'].stop()
+            self.ost['introloop'].stop()
             self.ost['deathloop'].play(-1)
             self.playmus = False
         
@@ -290,6 +227,7 @@ class Game:
         self.screenshake = 0
 
         self.playmus = True
+        self.playmenumus = True
 
         self.dead = 0
 
@@ -317,6 +255,7 @@ class Game:
 
         level_bar = Text("Time Left: " + str(self.game_timer), pos=(self.display.get_width() // 2 -30, 13))
         self.ost['deathloop'].stop()
+        self.ost['introloop'].stop()
         self.ost['battleloop'].play(-1)
         
 
