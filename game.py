@@ -256,6 +256,7 @@ class Game:
         level_bar = Text("Time Left: " + str(self.game_timer), pos=(self.display.get_width() // 2 -30, 13))
         self.ost['deathloop'].stop()
         self.ost['introloop'].stop()
+        self.ost['battleloop'].stop()
         self.ost['battleloop'].play(-1)
         
 
