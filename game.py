@@ -103,6 +103,7 @@ class Game:
         pygame.mouse.set_visible(False)
 
     def main_menu(self):
+        self.ost['introstart'].play(-1)
         while True:
             self.display.fill((255, 255, 255))
 
@@ -130,6 +131,7 @@ class Game:
 
     def game_over(self, score):
         # render the game over screen
+        self.ost['battleloop'].play(0)
         game_over = GameOver(self, score)
         game_over.update()
         game_over.render()

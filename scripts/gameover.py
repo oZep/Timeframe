@@ -32,7 +32,7 @@ class GameOver():
         if self.score[0] == "-":
             self.text4.render(self.death_panel, 50, (0,0,0))
         
-        self.game.display.blit(self.death_panel)
+        self.game.display.blit(self.death_panel, (0,0))
 
 
 
