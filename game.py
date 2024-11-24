@@ -49,6 +49,7 @@ class Game:
             'D': load_image('UI/D.png'),
             'ESC': load_image('UI/ESC.png'),
             'click': load_image('UI/click.png'),
+            'button': load_image('UI/button.png'),
         }
 
         # adding sound
@@ -101,15 +102,47 @@ class Game:
         self.scroll = [0, 0]
 
         pygame.mouse.set_visible(False)
-
     def main_menu(self):
         while True:
             self.display.fill((255, 255, 255))
+
+            self.title = Text('Timeframe', [750, 200])
+            self.title.render(self.display, 120, (0,0,0))
+
+            self.display.blit(pygame.transform.scale(self.assets['button'], (self.assets['button'].get_width() * 1.75, self.assets['button'].get_height() * 1.75)), (850, 485))
+            start_text = Text('Start', (920, 509))
+            start_text.render(self.display, 50, color=(0, 0, 0))
+            start_rect = pygame.Rect(850, 485, self.assets['button'].get_width() * 1.75, self.assets['button'].get_height() * 1.75)
+
+            self.display.blit(pygame.transform.scale(self.assets['button'], (self.assets['button'].get_width() * 1.75, self.assets['button'].get_height() * 1.75)), (850, 635))
+            controls_text = Text('Tutorial', (900, 659))
+            controls_text.render(self.display, 50, color=(0, 0, 0))
+            controls_rect = pygame.Rect(850, 635, self.assets['button'].get_width(), self.assets['button'].get_height())
+
+            self.display.blit(pygame.transform.scale(self.assets['button'], (self.assets['button'].get_width() * 1.75, self.assets['button'].get_height() * 1.75)), (850, 785))
+            quit_text = Text('Quit', (920, 809))
+            quit_text.render(self.display, 50, color=(0, 0, 0))
+            quit_rect = pygame.Rect(850, 785, self.assets['button'].get_width(), self.assets['button'].get_height())
+
+            mpos = pygame.mouse.get_pos() # gets mouse positon
+            mpos = (mpos[0] / (self.screen_size[0]/self.display.get_width()), mpos[1] / (self.screen_size[1]/self.display.get_height())) # since screen sometimes scales
+            self.display.blit(pygame.transform.scale(self.assets['target'], (32, 32)), (mpos[0], mpos[1]))
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: # have to code the window closing
                     pygame.quit()
                     sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        if start_rect.collidepoint(mpos):
+                            self.sfx['select'].play(0)
+                            self.run()
+                        if controls_rect.collidepoint(mpos):
+                            self.sfx['select'].play(0)
+                            self.controls()
+                        if quit_rect.collidepoint(mpos):
+                            pygame.quit()
+                            sys.exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         pygame.quit()
@@ -117,12 +150,45 @@ class Game:
                     if event.key == pygame.K_RETURN:
                         self.sfx['select'].play(0)
                         self.run()
+            
+            self.screen.blit(pygame.transform.scale(self.display, self.screen_size), [0,0])
+            pygame.display.update()
+            self.deltatime = self.clock.tick(60) # run at 60 fps, like a sleep
+            
+
+    def controls(self):
+        while True:
+            self.display.fill((255, 255, 255))
+
+            self.display.blit(pygame.transform.scale(self.assets['button'], (self.assets['button'].get_width() * 1.75, self.assets['button'].get_height() * 1.75)), (850, 785))
+            back_text = Text('Back', (920, 809))
+            back_text.render(self.display, 50, color=(0, 0, 0))
+            back_rect = pygame.Rect(850, 785, self.assets['button'].get_width(), self.assets['button'].get_height())
+
+            mpos = pygame.mouse.get_pos() # gets mouse positon
+            mpos = (mpos[0] / (self.screen_size[0]/self.display.get_width()), mpos[1] / (self.screen_size[1]/self.display.get_height())) # since screen sometimes scales
+            self.display.blit(pygame.transform.scale(self.assets['target'], (32, 32)), (mpos[0], mpos[1]))
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT: # have to code the window closing
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        if back_rect.collidepoint(mpos):
+                            self.sfx['select'].play(0)
+                            self.main_menu()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        self.sfx['select'].play(0)
+                        self.main_menu()
 
             # render the main menu
             menu = Menu(self)
             menu.update()
             menu.render()
 
+            
             
             self.screen.blit(pygame.transform.scale(self.display, self.screen_size), [0,0])
             pygame.display.update()
@@ -291,8 +357,10 @@ class Game:
                         self.screenshake = max(10, self.screenshake)
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
+                        self.sfx['select'].play(0)
                         self.main_menu()
                     if self.dead and event.key == pygame.K_RETURN:
+                        self.sfx['select'].play(0)
                         self.run()
                     if event.key == pygame.K_a: # referencing right and left arrow keys
                         self.movement[0] = True
